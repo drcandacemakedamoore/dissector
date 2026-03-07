@@ -1,6 +1,11 @@
-## Badges
+<p align="center">
+    <img style="width: 30%; height: 30%" src="dissector-logo.png">
+</p>
 
-(Customize these badges with your own links, and check https://shields.io/ or https://badgen.net/ to see which other badges are available.)
+# Dissector
+
+
+(Badges to be updated soon.)
 
 | fair-software.eu recommendations | |
 | :-- | :--  |
@@ -16,7 +21,9 @@
 | Build                              | [![build](https://github.com/drcandacemakedamoore/dissector/actions/workflows/build.yml/badge.svg)](https://github.com/drcandacemakedamoore/dissector/actions/workflows/build.yml) |
 | Citation data consistency          | [![cffconvert](https://github.com/drcandacemakedamoore/dissector/actions/workflows/cffconvert.yml/badge.svg)](https://github.com/drcandacemakedamoore/dissector/actions/workflows/cffconvert.yml) || SonarCloud                         | [![sonarcloud](https://github.com/drcandacemakedamoore/dissector/actions/workflows/sonarcloud.yml/badge.svg)](https://github.com/drcandacemakedamoore/dissector/actions/workflows/sonarcloud.yml) || Link checker              | [![link-check](https://github.com/drcandacemakedamoore/dissector/actions/workflows/link-check.yml/badge.svg)](https://github.com/drcandacemakedamoore/dissector/actions/workflows/link-check.yml) |## How to use dissector
 
-This package contains methods for medical image segmentation.
+Dissector is is an open-source python library which contains methods for medical image segmentation. The images
+can be extracted from [DICOM](https://www.dicomstandard.org/) files or used 
+directly. The primary authors are Candace Makeda H. Moore and Morris Alper.
 
 The project setup is documented in [project_setup.md](project_setup.md). Feel free to remove this document (and/or the link to this document) if you don't need it.
 
@@ -32,7 +39,7 @@ python -m pip install .
 
 ## Documentation
 
-Include a link to your project's full documentation here.
+There will soon be a link to our project's full documentation here.
 
 ## Contributing
 
