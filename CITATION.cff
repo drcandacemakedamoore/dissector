@@ -1,0 +1,17 @@
+# YAML 1.2
+---
+cff-version: "1.2.0"
+title: "dissector"
+authors:
+  - family-names: Moore
+    given-names: Candace
+    orcid: "https://orcid.org/0000-0000-0000-0000"
+date-released: 2026-03-07
+version: "0.0.1"
+repository-code: "https://github.com/drcandacemakedamoore/dissector"
+keywords:
+  - "segmentation"
+  - " MRI"
+  - " CT"
+  - " medical image"
+message: "If you use this software, please cite it using these metadata."

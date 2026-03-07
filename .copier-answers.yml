@@ -1,0 +1,33 @@
+# Changes here will be overwritten by Copier
+SelectCodeQualityFeatures:
+- AddLocalTests_flag
+- SelectGitHubActions_flag
+- AddLinting_flag
+- AddSonarCloud_flag
+- AddEditorConfig_flag
+SelectCommunityFeatures:
+- AddCodeConduct_flag
+- AddContributing_flag
+SelectDocumentationFeatures:
+- AddLocalDocumentation_flag
+- AddOnlineDocumentation_flag
+- AddDevDoc_flag
+- AddGitHubActionDocumentation_flag
+SelectGitHubActions:
+- AddGitHubActionBuild_flag
+- AddLinkCheck_flag
+SelectPublishReleaseFeatures:
+- AddZenodo_flag
+_commit: 0.6.1
+_src_path: https://github.com/nlesc/python-template.git
+code_of_conduct_email: doctormakeda@gmail.com
+copyright_holder: Candace Makeda Moore
+email: doctormakeda@gmail.com
+full_name: Candace Makeda Moore
+github_organization: drcandacemakedamoore
+keywords: segmentation, MRI, CT, medical image
+license: Apachev2
+package_name: dissector
+package_short_description: This package contains methods for medical image segmentation.
+template_profile: recommended
+version: 0.0.1
