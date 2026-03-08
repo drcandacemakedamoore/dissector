@@ -39,7 +39,7 @@ python -m pip install .
 
 ## Documentation
 
-There will soon be a link to our project's full documentation here (one source should be https://drcandacemakedamoore.github.io/dissector/ ). Until then it should buid in your docs/_build folder.
+One source should be https://drcandacemakedamoore.github.io/dissector/. Pypi and build the docs may take longer. Until then it should be online and buid in your docs/_build folder.
 
 ## Contributing
 
