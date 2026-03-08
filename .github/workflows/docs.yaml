@@ -60,3 +60,8 @@ jobs:
 
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
+
+        
+  deploy:
+    environment:
+      name: github-pages
