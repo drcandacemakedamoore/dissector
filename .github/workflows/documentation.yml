@@ -52,7 +52,7 @@ jobs:
 
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
-        yaml permissions: id-token: write contents: read
+        permissions: id-token: write contents: read
         # with:
         #   environment: github-pages
         # with:
