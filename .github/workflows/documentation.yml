@@ -33,7 +33,9 @@ jobs:
           python -m pip install -e .[docs]
           python -m pip install .[dev,publishing]
       - name: Install pandoc using apt
-        run: sudo apt install pandoc        
+        run: sudo apt install pandoc     
+      - name: Install build tools
+        run: sudo apt update && sudo apt install -y make  
       - name: Build documentation
         run: make coverage doctest html
         working-directory: docs
