@@ -1,7 +1,7 @@
-"""Tests for the dissector.my_module module."""
+"""Tests for the dissector.diffusion module."""
 
 import pytest
-from dissector.my_module import hello
+from dissector.diffusion import hello
 
 
 def test_hello():
