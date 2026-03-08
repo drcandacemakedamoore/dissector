@@ -21,7 +21,7 @@ classifiers = [
     "Programming Language :: Python :: 3",
 ]
 
-dependencies = []
+dependencies = ["numpy",]
 description = "This package contains methods for medical image segmentation."
 keywords = ["segmentation"," MRI"," CT"," medical image"]
 license = {file = "LICENSE"}
