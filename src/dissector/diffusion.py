@@ -23,7 +23,7 @@ def hello(name: str) -> str:
     Example:
         This function can be called with `Jane Smith` as argument using
 
-        >>> from dissector.my_module import hello
+        >>> from dissector.diffusion import hello
         >>> hello('Jane Smith')
         'Hello Jane Smith!'
 
