@@ -1,11 +1,15 @@
 """Documentation about the dissector module."""
 
+import numpy as np
+import pandas as pd
 
 # FIXME: put actual code here
+
+#this line is total junk
 def hello(name: str) -> str:
     """Say hello.
 
-    Function docstring using Google docstring style.
+    Function docstring using Google docstring style. Will be upgraded to sphinx style soon.
 
     Args:
         name (str): Name to say hello to
