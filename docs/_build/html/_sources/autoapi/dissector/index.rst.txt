@@ -1,0 +1,45 @@
+dissector
+=========
+
+.. py:module:: dissector
+
+.. autoapi-nested-parse::
+
+   Documentation about dissector.
+
+
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/dissector/diffusion/index
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   dissector.__author__
+   dissector.__email__
+   dissector.__version__
+
+
+Package Contents
+----------------
+
+.. py:data:: __author__
+   :value: 'Candace Makeda Moore'
+
+
+.. py:data:: __email__
+   :value: 'doctormakeda@gmail.com'
+
+
+.. py:data:: __version__
+   :value: '0.0.1'
+
+

@@ -1,0 +1,45 @@
+dissector.diffusion
+===================
+
+.. py:module:: dissector.diffusion
+
+.. autoapi-nested-parse::
+
+   Documentation about the dissector module.
+
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   dissector.diffusion.hello
+
+
+Module Contents
+---------------
+
+.. py:function:: hello(name: str) -> str
+
+   Say hello.
+
+   Function docstring using Google docstring style. Will be upgraded to sphinx style soon.
+
+   :param name: Name to say hello to
+   :type name: str
+
+   :returns: Hello message
+   :rtype: str
+
+   :raises ValueError: If `name` is equal to `nobody`
+
+   .. rubric:: Example
+
+   This function can be called with `Jane Smith` as argument using
+
+   >>> from dissector.diffusion import hello
+   >>> hello('Jane Smith')
+   'Hello Jane Smith!'
+
+
