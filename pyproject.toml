@@ -15,13 +15,12 @@ classifiers = [
     "Development Status :: 2 - Pre-Alpha",
     "Intended Audience :: Developers",
     "Intended Audience :: Science/Research",
-    "",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
     "Natural Language :: English",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
 ]
+
 dependencies = []
 description = "This package contains methods for medical image segmentation."
 keywords = ["segmentation"," MRI"," CT"," medical image"]
