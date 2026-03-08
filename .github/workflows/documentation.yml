@@ -32,6 +32,7 @@ jobs:
           python -m pip install --upgrade pip setuptools
           python -m pip install -e .[docs]
           python -m pip install .[dev,publishing]
+          python -m pip install sphinx sphinx-autoapi sphinx-rtd-theme myst-parser
       - name: Install pandoc using apt
         run: sudo apt install pandoc     
       - name: Install build tools
@@ -39,3 +40,18 @@ jobs:
       - name: Build documentation
         run: make coverage doctest html
         working-directory: docs
+            # 7️⃣ Check _build/html exists
+      - name: List built docs
+        run: ls -R docs/_build/html
+
+      # 8️⃣ Deploy to GitHub Pages
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/_build/html
+
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
+        with:
+          environment: github-pages
+      
