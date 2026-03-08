@@ -10,6 +10,11 @@ on:
     - main
     - develop
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+  
 jobs:
   build-documentation:
     name: Build documentation
@@ -52,7 +57,7 @@ jobs:
 
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
-        permissions: id-token: write contents: read
+        
         # with:
         #   environment: github-pages
         # with:
