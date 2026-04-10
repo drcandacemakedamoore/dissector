@@ -1,0 +1,12 @@
+name: eval_seg
+channels:
+  - conda-forge
+  
+dependencies:
+
+  - jupyterlab
+  - matplotlib
+  - numpy
+  - pandas
+  - simpleitk
+  

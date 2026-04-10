@@ -67,3 +67,7 @@ venv.bak/
 *.swp
 *.swo
 *.orig
+
+# data
+/eval_notebooks/myosegmenTUM
+eval_notebooks/myosegmenTUM

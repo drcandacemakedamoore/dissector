@@ -21,9 +21,12 @@
 | Citation data consistency          | [![cffconvert](https://github.com/drcandacemakedamoore/dissector/actions/workflows/cffconvert.yml/badge.svg)](https://github.com/drcandacemakedamoore/dissector/actions/workflows/cffconvert.yml) |
 | Link checker              | [![link-check](https://github.com/drcandacemakedamoore/dissector/actions/workflows/link-check.yml/badge.svg)](https://github.com/drcandacemakedamoore/dissector/actions/workflows/link-check.yml) |## How to use dissector
 
-Dissector is is an open-source python library which contains methods for medical image segmentation. The images
+Dissector is is an open-source python library which contains methods for medical image segmentation and the evaluation of medical image segmentation. 
+The module for evaluation contains methods to compare a segmentation to a 'ground truth' segmentation. This module should be run in it's own dedicated environment, which can be made in conda (see yaml environment_evaluation), pip or uv. Currently it has only been tested in conda, but the requirements are loose.  
+The images
 can be extracted from [DICOM](https://www.dicomstandard.org/) files or used 
-directly. The primary authors are Candace Makeda H. Moore and Morris Alper.
+directly. 
+The primary authors are Candace Makeda H. Moore and Morris Alper.
 
 The project setup is documented in [project_setup.md](project_setup.md). Feel free to remove this document (and/or the link to this document) if you don't need it.
 
