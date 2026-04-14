@@ -69,5 +69,14 @@ venv.bak/
 *.orig
 
 # data
-/eval_notebooks/myosegmenTUM
-eval_notebooks/myosegmenTUM
+/eval_notebooks/myosegmenTUM/*/ImageData
+eval_notebooks/myosegmenTUM/*/ImageData
+/eval_notebooks/myosegmenTUM/*/SegmentationMasks
+eval_notebooks/myosegmenTUM/*/SegmentationMasks
+/eval_notebooks/ground_truths
+eval_notebooks/ground_truths
+/eval_notebooks/MuscleMap_segs
+eval_notebooks/MuscleMap_segs
+
+copy_back.sh
+bash_fat_frac_move.sh
