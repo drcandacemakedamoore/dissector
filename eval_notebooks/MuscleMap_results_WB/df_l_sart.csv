@@ -1,4 +1,4 @@
-,image,pred_label,R_sartor_lower_dice:,R_sartor_lower_Hausdorff:,R_sartor_jaccard,R_sartor_volume_similarity,R_sartor_falseNegative,R_sartor_falsePostivie
+,image,pred_label,L_sartor_lower_dice:,L_sartor_lower_Hausdorff:,L_sartor_jaccard,L_sartor_volume_similarity,L_sartor_falseNegative,L_sartor_falsePostivie
 0,HV001_1/SegmentationMasks/combined_gt_stack1.mha,HV001_1_FATFRACTION_stack1_dseg.nii.gz,0.8725139559087899,20.0,0.7738578765398946,-0.6310919185687847,0.17152405936680204,6.697326828833138e-05
 1,HV001_1/SegmentationMasks/combined_gt_stack2.mha,HV001_1_FATFRACTION_stack2_dseg.nii.gz,0.8623015602643592,44.02272140611028,0.757935082045754,-0.6310919185687847,0.1938168846611177,7.362311995824062e-05
 2,HV001_2/SegmentationMasks/combined_gt_stack1.mha,HV001_2_FATFRACTION_stack1_dseg.nii.gz,0.8583292793105844,40.0,0.751818596865013,-0.6310919185687847,0.15102251245918544,0.00012822320659299175

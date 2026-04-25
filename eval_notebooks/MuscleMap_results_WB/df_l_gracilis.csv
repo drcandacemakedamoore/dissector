@@ -1,4 +1,4 @@
-,image,pred_label,R_gracilis_lower_dice:,R_gracilis_lower_Hausdorff:,R_gracilis_jaccard,R_gracilis_volume_similarity,R_gracilis_falseNegative,R_gracilis_falsePostivie
+,image,pred_label,L_gracilis_lower_dice:,L_gracilis_lower_Hausdorff:,L_gracilis_jaccard,L_gracilis_volume_similarity,L_gracilis_falseNegative,L_gracilis_falsePostivie
 0,HV001_1/SegmentationMasks/combined_gt_stack1.mha,HV001_1_FATFRACTION_stack1_dseg.nii.gz,0.8478479919389664,8.306623862918075,0.7358820589705147,-1.771900826446281,0.16096866096866097,6.707813375543476e-05
 1,HV001_1/SegmentationMasks/combined_gt_stack2.mha,HV001_1_FATFRACTION_stack2_dseg.nii.gz,0.8403531235258441,12.206555615733702,0.7246629474662948,-1.771900826446281,0.15354330708661418,0.00012155566905987982
 2,HV001_2/SegmentationMasks/combined_gt_stack1.mha,HV001_2_FATFRACTION_stack1_dseg.nii.gz,0.8586971683637885,6.4031242374328485,0.7523832803715473,-1.771900826446281,0.167658193618172,5.358207779026966e-05
