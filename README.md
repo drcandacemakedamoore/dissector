@@ -14,12 +14,11 @@
 | community registry           | [![RSD](https://img.shields.io/badge/rsd-dissector-00a3e3.svg)](https://www.research-software.nl/software/dissector) [![workflow pypi badge](https://img.shields.io/pypi/v/dissector.svg?colorB=blue)](https://pypi.python.org/project/dissector/) |
 | citation | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18909057.svg)](https://doi.org/10.5281/zenodo.18909057) |
 | howfairis                       | [![fair-software badge](https://img.shields.io/badge/fair--software.eu-%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8B-yellow)](https://fair-software.eu) |
-
-| **Other best practices**           | &nbsp; |
-| Documentation                      | [![Documentation Status](https://readthedocs.org/projects/dissector/badge/?version=latest)](https://dissector.readthedocs.io/en/latest/?badge=latest) || **GitHub Actions**                 | &nbsp; |
-| Build                              | [![build](https://github.com/drcandacemakedamoore/dissector/actions/workflows/build.yml/badge.svg)](https://github.com/drcandacemakedamoore/dissector/actions/workflows/build.yml) |
-| Citation data consistency          | [![cffconvert](https://github.com/drcandacemakedamoore/dissector/actions/workflows/cffconvert.yml/badge.svg)](https://github.com/drcandacemakedamoore/dissector/actions/workflows/cffconvert.yml) |
-| Link checker              | [![link-check](https://github.com/drcandacemakedamoore/dissector/actions/workflows/link-check.yml/badge.svg)](https://github.com/drcandacemakedamoore/dissector/actions/workflows/link-check.yml) |
+| **Other best practices** | &nbsp; |
+| Documentation | [![Documentation Status](https://readthedocs.org/projects/dissector/badge/?version=latest)](https://dissector.readthedocs.io/en/latest/?badge=latest) |
+| Build | [![build](https://github.com/drcandacemakedamoore/dissector/actions/workflows/build.yml/badge.svg)](https://github.com/drcandacemakedamoore/dissector/actions/workflows/build.yml) |
+| Citation data consistency | [![cffconvert](https://github.com/drcandacemakedamoore/dissector/actions/workflows/cffconvert.yml/badge.svg)](https://github.com/drcandacemakedamoore/dissector/actions/workflows/cffconvert.yml) |
+| Link checker | [![link-check](https://github.com/drcandacemakedamoore/dissector/actions/workflows/link-check.yml/badge.svg)](https://github.com/drcandacemakedamoore/dissector/actions/workflows/link-check.yml) |
 
 ## How to use dissector
 
