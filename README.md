@@ -12,21 +12,23 @@
 | (1/5) code repository              | [![github repo badge](https://img.shields.io/badge/github-repo-000.svg?logo=github&labelColor=gray&color=blue)](https://github.com/drcandacemakedamoore/dissector) |
 | (2/5) license                      | [![github license badge](https://img.shields.io/github/license/drcandacemakedamoore/dissector)](https://github.com/drcandacemakedamoore/dissector) |
 | (3/5) community registry           | [![RSD](https://img.shields.io/badge/rsd-dissector-00a3e3.svg)](https://www.research-software.nl/software/dissector) [![workflow pypi badge](https://img.shields.io/pypi/v/dissector.svg?colorB=blue)](https://pypi.python.org/project/dissector/) |
-| (4/5) citation                     | [![DOI](https://zenodo.org/badge/1175030056.svg)](https://doi.org/10.5281/zenodo.18909057)|
+| (4/5) citation                     | [![DOI](https://zenodo.org/badge/1175030056.svg)](https://doi.org/10.5281/zenodo.18909057) | 
 | (5/5) checklist                    | [![workflow cii badge](https://bestpractices.coreinfrastructure.org/projects/<replace-with-created-project-identifier>/badge)](https://bestpractices.coreinfrastructure.org/projects/<replace-with-created-project-identifier>) |
 | howfairis                          | [![fair-software badge](https://img.shields.io/badge/fair--software.eu-%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8B-yellow)](https://fair-software.eu) |
 | **Other best practices**           | &nbsp; |
 | Documentation                      | [![Documentation Status](https://readthedocs.org/projects/dissector/badge/?version=latest)](https://dissector.readthedocs.io/en/latest/?badge=latest) || **GitHub Actions**                 | &nbsp; |
 | Build                              | [![build](https://github.com/drcandacemakedamoore/dissector/actions/workflows/build.yml/badge.svg)](https://github.com/drcandacemakedamoore/dissector/actions/workflows/build.yml) |
 | Citation data consistency          | [![cffconvert](https://github.com/drcandacemakedamoore/dissector/actions/workflows/cffconvert.yml/badge.svg)](https://github.com/drcandacemakedamoore/dissector/actions/workflows/cffconvert.yml) |
-| Link checker              | [![link-check](https://github.com/drcandacemakedamoore/dissector/actions/workflows/link-check.yml/badge.svg)](https://github.com/drcandacemakedamoore/dissector/actions/workflows/link-check.yml) |## How to use dissector
+| Link checker              | [![link-check](https://github.com/drcandacemakedamoore/dissector/actions/workflows/link-check.yml/badge.svg)](https://github.com/drcandacemakedamoore/dissector/actions/workflows/link-check.yml) |
+
+## How to use dissector
 
 Dissector is is an open-source python library which contains methods for medical image segmentation and the evaluation of medical image segmentation. 
 The module for evaluation contains methods to compare a segmentation to a 'ground truth' segmentation. This module should be run in it's own dedicated environment, which can be made in conda (see yaml environment_evaluation), pip or uv. Currently it has only been tested in conda, but the requirements are loose.  
 The images
 can be extracted from [DICOM](https://www.dicomstandard.org/) files or used 
 directly. 
-The primary authors are Candace Makeda H. Moore and Morris Alper.
+The long term goal of the dissector project is to compare existing segmentation methods to a to be released state of the art method currently being built but not publicly released yet. This new method exploits the various types of noise in different MRI sequences...so computer science enthousiasts can probably guess the kind of model on the way. The primary authors are Candace Makeda H. Moore and Morris Alper.
 
 The project setup is documented in [project_setup.md](project_setup.md). Feel free to remove this document (and/or the link to this document) if you don't need it.
 
@@ -39,6 +41,8 @@ git clone git@github.com:drcandacemakedamoore/dissector.git
 cd dissector
 python -m pip install .
 ```
+Instructions for uv and conda soon to come...
+
 
 ## Documentation
 
