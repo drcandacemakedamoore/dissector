@@ -61,3 +61,37 @@ resampled = sitk.Resample(
 
 # Save result
 sitk.WriteImage(resampled, "aligned.nii")
+
+
+# single row visualization function
+
+def single_row_viz(metrics, dataset, row, title):
+
+    """
+    This visualizes a single row of metrics on a radar plot. metrics is a list, dataset is the dataframe, row is the row number
+    """
+    
+    row = dataset.iloc[row]
+    values = row[metrics].values.astype(float)
+    values = np.append(values, values[0])
+    # Angles based on number of metrics
+    num_metrics = len(metrics)
+    angles = np.linspace(0, 2*np.pi, num_metrics, endpoint=False)
+    angles = np.append(angles, angles[0])
+
+    # auto-generate readable labels
+    labels = [m.replace("_", " ").strip(":") for m in metrics]
+    # Plot
+    fig, ax = plt.subplots(figsize=(6, 6), subplot_kw=dict(polar=True))
+
+    ax.plot(angles, values, 'o-', linewidth=2)
+    ax.fill(angles, values, alpha=0.25)
+
+    ax.set_xticks(angles[:-1])
+    ax.set_xticklabels(labels)
+
+    ax.set_ylim(0, 1)
+
+    plt.title(title)
+    plt.show()
+single_row_viz(["L_gracilis_jaccard","one_minus_falseNegative","one_minus_falsePositive"], thigh_left_grac_dataset, 0, "Visualize example")
