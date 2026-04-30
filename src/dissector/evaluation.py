@@ -1,5 +1,5 @@
 import numpy as np 
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 
 def extract_boundary_2d(mask: np.ndarray) -> np.ndarray:
     """Get boundary pixels of a binary mask on 2d image."""
@@ -140,7 +140,7 @@ def single_row_viz(metrics, dataset, row, title):
     This visualizes a single row of metrics on a radar plot. metrics is a
     list,dataset is the dataframe, row is the row number
     """
-    
+    import matplotlib.pyplot as plt
     row = dataset.iloc[row]
     values = row[metrics].values.astype(float)
     values = np.append(values, values[0])

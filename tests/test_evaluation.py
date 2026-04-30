@@ -1,6 +1,7 @@
 """Tests for the dissector.diffusion module."""
 
 import numpy as np
+import matplotlib.pyplot as plt
 from dissector.evaluation import extract_boundary_2d, extract_boundary_3d
 
 
