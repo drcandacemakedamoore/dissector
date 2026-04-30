@@ -166,31 +166,68 @@ def dilate_3d(mask: np.ndarray, distance: int) -> np.ndarray:
     return dilated
 
 
-def boundary_overlap_2d(distance: int, mask_a: np.ndarray, mask_b: np.ndarray):
-    """
-    Boundary overlap for binary segmentation masks using NumPy only.
-    """
+# def boundary_overlap(distance: int, mask_a: np.ndarray, mask_b: np.ndarray):
+#     """
+#     Boundary overlap for binary segmentation masks using NumPy only.
+#     """
 
-    # extract boundaries
-    b_a = extract_boundary(mask_a)
-    b_b = extract_boundary(mask_b)
+#     # extract boundaries
+#     b_a = extract_boundary(mask_a)
+#     b_b = extract_boundary(mask_b)
 
-    # dilate boundaries (tolerance)
-    d_a = dilate(b_a, distance)
-    d_b = dilate(b_b, distance)
+#     # dilate boundaries (tolerance)
+#     d_a = dilate(b_a, distance)
+#     d_b = dilate(b_b, distance)
 
-    # Overlap
-    overlap = np.logical_and(d_a, d_b).sum()
+#     # Overlap
+#     overlap = np.logical_and(d_a, d_b).sum()
 
-    # Normalize (average boundary size)
-    size_a = b_a.sum()
-    size_b = b_b.sum()
-    denom = (size_a + size_b) / 2
+#     # Normalize (average boundary size)
+#     size_a = b_a.sum()
+#     size_b = b_b.sum()
+#     denom = (size_a + size_b) / 2
 
-    if denom == 0:
+#     if denom == 0:
+#         return 0.0
+
+#     return overlap / denom
+
+
+def boundary_iou_3d(distance: int, mask_a: np.ndarray, mask_b: np.ndarray):
+    """needs to be rewritten, currently failing"""
+    b_a = extract_boundary_3d(mask_a)
+    b_b = extract_boundary_3d(mask_b)
+
+    d_a = dilate_3d(b_a, distance)
+    d_b = dilate_3d(b_b, distance)
+
+    intersection = np.logical_and(d_a, d_b).sum()
+    union =  d_a.sum() + d_b.sum() - intersection 
+
+    if union == 0:
         return 0.0
 
-    return overlap / denom
+    return intersection / union
+
+def boundary_iou_2d(distance: int, mask_a: np.ndarray, mask_b: np.ndarray):
+    """extracst boundary iou according to
+    formula from
+    https://metrics-reloaded.dkfz.de/metric-library/
+    boundary_intersection_over_union_local definition"""
+    b_a = extract_boundary_2d(mask_a)
+    b_b = extract_boundary_2d(mask_b)
+
+    d_a = dilate_2d(b_a, distance)
+    d_b = dilate_2d(b_b, distance)
+
+    intersection = np.logical_and(d_a, d_b).sum()
+    print(d_a.sum())
+    union =  d_a.sum() + d_b.sum() - intersection 
+
+    if union == 0:
+        return 0.0
+
+    return intersection / union
 # single row visualization function
 
 def single_row_viz(metrics, dataset, row, title):
