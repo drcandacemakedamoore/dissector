@@ -5,7 +5,7 @@ import pandas as pd
 
 # FIXME: put actual code here
 
-#this line is total junk
+# these lines are total junk
 def hello(name: str) -> str:
     """Say hello.
 
