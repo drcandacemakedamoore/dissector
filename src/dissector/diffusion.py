@@ -1,7 +1,7 @@
 """Documentation about the dissector module."""
 
-import numpy as np
-import pandas as pd
+# import numpy as np
+
 
 # FIXME: put actual code here
 
@@ -31,4 +31,6 @@ def hello(name: str) -> str:
     if name == "nobody":
         msg = "Can not say hello to nobody"
         raise ValueError(msg)
+
+        
     return f"Hello {name}!"

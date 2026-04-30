@@ -3,6 +3,7 @@ import numpy as np
 # boundaru iou
 
 import numpy as np
+import matplotlib.pyplot as plt
 
 def extract_boundary_2d(mask: np.ndarray) -> np.ndarray:
     """Get boundary pixels of a binary mask on 2d image."""
@@ -171,4 +172,3 @@ def single_row_viz(metrics, dataset, row, title):
     plt.title(title)
     plt.show()
 
-    

@@ -1,9 +1,7 @@
 """Tests for the dissector.diffusion module."""
 
-import pytest
-from dissector.evaluation import extract_boundary_2d, extract_boundary_3d
 import numpy as np
-
+from dissector.evaluation import extract_boundary_2d, extract_boundary_3d
 
 
 def test_extract_boundary_2d():
@@ -14,12 +12,17 @@ def test_extract_boundary_2d():
         pic[6, z] = 1
         pic[7, z] = 1
     extracted = extract_boundary_2d(pic)
+    
+    total_voxels = pic.sum()
+    print("total voxels", total_voxels)
+    interior_voxels = 1*1*4
+    expected_boundary_voxels = total_voxels - interior_voxels
 
-    assert sum(sum(extracted)) == 14
+    assert sum(sum(extracted)) == expected_boundary_voxels
 
 
 def test_extract_boundary_3d():
-    """example 3d boundary extract"""
+    """Example 3d boundary extract."""
     vol = np.zeros((10, 10, 10), dtype=int)
     for z in range(10):
         vol[5, 5, z] = 1
@@ -34,5 +37,11 @@ def test_extract_boundary_3d():
 
         extracted3 = extract_boundary_3d(vol)
 
-    assert sum(sum(sum(extracted3))) == 82
+    total_voxels = vol.sum()
+    # print("total voxels", total_voxels)
+    interior_voxels = 1*1*8 
+    expected_boundary_voxels = total_voxels - interior_voxels
+        
+
+    assert sum(sum(sum(extracted3))) == expected_boundary_voxels
 
