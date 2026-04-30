@@ -1,5 +1,4 @@
-import numpy as np 
-#import matplotlib.pyplot as plt
+import numpy as np
 
 def extract_boundary_2d(mask: np.ndarray) -> np.ndarray:
     """Get boundary pixels of a binary mask on 2d image."""
@@ -30,7 +29,7 @@ def extract_boundary_3d(mask: np.ndarray) -> np.ndarray:
     neighbors = [
         (-1, 0, 0), (1, 0, 0),
         (0, -1, 0), (0, 1, 0),
-        (0, 0, -1), (0, 0, 1)
+        (0, 0, -1), (0, 0, 1),
     ]
 
     for z in range(d):
@@ -74,7 +73,7 @@ def dilate_2d(mask: np.ndarray, distance: int) -> np.ndarray:
 
 
 def dilate_3d(mask: np.ndarray, distance: int) -> np.ndarray:
-    """Simple dilation using NumPy only on a 3D matrix"""
+    """Simple dilation using NumPy only on a 3D matrix."""
     h, w, d = mask.shape
     dilated = np.zeros_like(mask, dtype=bool)
 

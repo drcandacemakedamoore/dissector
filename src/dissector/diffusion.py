@@ -1,6 +1,6 @@
 """Documentation about the dissector module."""
 
-# import numpy as np
+# imports in the future here
 
 
 # FIXME: put actual code here
@@ -32,5 +32,4 @@ def hello(name: str) -> str:
         msg = "Can not say hello to nobody"
         raise ValueError(msg)
 
-        
     return f"Hello {name}!"
