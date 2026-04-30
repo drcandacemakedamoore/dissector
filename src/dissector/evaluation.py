@@ -153,7 +153,7 @@ def single_row_viz(metrics, dataset, row, title):
     # Plot
     fig, ax = plt.subplots(figsize=(6, 6), subplot_kw=dict(polar=True))
 
-    ax.plot(angles, values, 'o-', linewidth=2)
+    ax.plot(angles, values, "o-", linewidth=2)
     ax.fill(angles, values, alpha=0.25)
 
     ax.set_xticks(angles[:-1])
