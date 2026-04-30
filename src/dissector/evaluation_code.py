@@ -68,8 +68,8 @@ import numpy as np
 
 import numpy as np
 
-def extract_boundary(mask: np.ndarray) -> np.ndarray:
-    """Get boundary pixels of a binary mask."""
+def extract_boundary_2d(mask: np.ndarray) -> np.ndarray:
+    """Get boundary pixels of a binary mask on 2d image."""
     h, w = mask.shape
     boundary = np.zeros_like(mask, dtype=bool)
 
@@ -122,8 +122,26 @@ def extract_boundary_3d(mask: np.ndarray) -> np.ndarray:
     return boundary
 
 
-def dilate(mask: np.ndarray, distance: int) -> np.ndarray:
-    """Simple square dilation using NumPy only."""
+def dilate_2d(mask: np.ndarray, distance: int) -> np.ndarray:
+    """Simple square dilation on a 2D mask using NumPy only."""
+    h, w = mask.shape
+    dilated = np.zeros_like(mask, dtype=bool)
+
+    for i in range(h):
+        for j in range(w):
+            if not mask[i, j]:
+                continue
+
+            for di in range(-distance, distance + 1):
+                for dj in range(-distance, distance + 1):
+                    ni, nj = i + di, j + dj
+                    if 0 <= ni < h and 0 <= nj < w:
+                        dilated[ni, nj] = True
+
+    return dilated
+
+def dilate_3d(mask: np.ndarray, distance: int) -> np.ndarray:
+    """Simple dilation using NumPy only on a 3d matrix"""
     h, w = mask.shape
     dilated = np.zeros_like(mask, dtype=bool)
 
