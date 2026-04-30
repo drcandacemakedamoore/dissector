@@ -24,6 +24,7 @@
 
 Dissector is is an open-source python library which contains methods for medical image segmentation and the evaluation of medical image segmentation. 
 The module for evaluation contains methods to compare a segmentation to a 'ground truth' segmentation. This module should be run in it's own dedicated environment, which can be made in conda (see yaml environment_evaluation), pip or uv. Currently it has only been tested in conda, but the requirements are loose.  
+The metrics beyond the expected (hausdorf, jaccard, fp, fn, dice) implemented are : boundary intersection over union
 The images
 can be extracted from [DICOM](https://www.dicomstandard.org/) files or used 
 directly. 

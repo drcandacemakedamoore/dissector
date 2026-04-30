@@ -1,8 +1,4 @@
 import numpy as np 
-
-# boundaru iou
-
-import numpy as np
 import matplotlib.pyplot as plt
 
 def extract_boundary_2d(mask: np.ndarray) -> np.ndarray:
@@ -24,7 +20,6 @@ def extract_boundary_2d(mask: np.ndarray) -> np.ndarray:
 
     return boundary
 
-import numpy as np
 
 def extract_boundary_3d(mask: np.ndarray) -> np.ndarray:
     """Get boundary voxels of a 3D binary mask."""
@@ -111,9 +106,8 @@ def boundary_iou_3d(distance: int, mask_a: np.ndarray, mask_b: np.ndarray):
 
     d_a = dilate_3d(b_a, distance)
     d_b = dilate_3d(b_b, distance)
-
     intersection = np.logical_and(d_a, d_b).sum()
-    union =  d_a.sum() + d_b.sum() - intersection 
+    union =  d_a.sum() + d_b.sum() - intersection
 
     if union == 0:
         return 0.0
@@ -132,7 +126,6 @@ def boundary_iou_2d(distance: int, mask_a: np.ndarray, mask_b: np.ndarray):
     d_b = dilate_2d(b_b, distance)
 
     intersection = np.logical_and(d_a, d_b).sum()
-    print(d_a.sum())
     union =  d_a.sum() + d_b.sum() - intersection 
 
     if union == 0:
