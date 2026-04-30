@@ -140,26 +140,33 @@ def dilate_2d(mask: np.ndarray, distance: int) -> np.ndarray:
 
     return dilated
 
+
 def dilate_3d(mask: np.ndarray, distance: int) -> np.ndarray:
-    """Simple dilation using NumPy only on a 3d matrix"""
-    h, w = mask.shape
+    """Simple dilation using NumPy only on a 3D matrix"""
+    h, w, d = mask.shape
     dilated = np.zeros_like(mask, dtype=bool)
 
     for i in range(h):
         for j in range(w):
-            if not mask[i, j]:
-                continue
+            for k in range(d):
+                if not mask[i, j, k]:
+                    continue
 
-            for di in range(-distance, distance + 1):
-                for dj in range(-distance, distance + 1):
-                    ni, nj = i + di, j + dj
-                    if 0 <= ni < h and 0 <= nj < w:
-                        dilated[ni, nj] = True
+                for di in range(-distance, distance + 1):
+                    for dj in range(-distance, distance + 1):
+                        for dk in range(-distance, distance + 1):
+                            ni, nj, nk = i + di, j + dj, k + dk
+                            if (
+                                0 <= ni < h and
+                                0 <= nj < w and
+                                0 <= nk < d
+                            ):
+                                dilated[ni, nj, nk] = True
 
     return dilated
 
 
-def boundary_overlap(distance: int, mask_a: np.ndarray, mask_b: np.ndarray):
+def boundary_overlap_2d(distance: int, mask_a: np.ndarray, mask_b: np.ndarray):
     """
     Boundary overlap for binary segmentation masks using NumPy only.
     """
