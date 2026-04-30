@@ -194,7 +194,8 @@ def dilate_3d(mask: np.ndarray, distance: int) -> np.ndarray:
 
 
 def boundary_iou_3d(distance: int, mask_a: np.ndarray, mask_b: np.ndarray):
-    """needs to be rewritten, currently failing"""
+    """boundary iou from metric definition
+    same as boundary_iou_2d but done in 3d"""
     b_a = extract_boundary_3d(mask_a)
     b_b = extract_boundary_3d(mask_b)
 
