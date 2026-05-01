@@ -7,14 +7,14 @@ from dissector.evaluation import extract_boundary_3d
 
 def test_extract_boundary_2d():
     """Example 2d boundary extract."""
-    pic = np.zeros((10,10), dtype=int)
-    for z in range(2,8):
+    pic = np.zeros((10, 10), dtype=int)
+    for z in range(2, 8):
         pic[5, z] = 1
         pic[6, z] = 1
         pic[7, z] = 1
     extracted = extract_boundary_2d(pic)
     total_voxels = pic.sum()
-    interior_voxels = 1*1*4
+    interior_voxels = 1 * 1 * 4
     expected_boundary_voxels = total_voxels - interior_voxels
 
     assert sum(sum(extracted)) == expected_boundary_voxels
@@ -37,9 +37,7 @@ def test_extract_boundary_3d():
         extracted3 = extract_boundary_3d(vol)
 
     total_voxels = vol.sum()
-    interior_voxels = 1*1*8
+    interior_voxels = 1 * 1 * 8
     expected_boundary_voxels = total_voxels - interior_voxels
 
-
     assert sum(sum(sum(extracted3))) == expected_boundary_voxels
-
