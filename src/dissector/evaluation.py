@@ -1,5 +1,6 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -197,7 +198,7 @@ def radarplot_single_dataset(
     # Plot multiple samples
     for i in range(len(dataset)):
         row = dataset.iloc[i]
-        values = row[metrics].to_numpy(dtype=float, copy=True)#.astype(float)
+        values = row[metrics].to_numpy(dtype=float, copy=True)
         values = np.append(values, values[0])
         ax.plot(angles, values, color="blue", alpha=0.4)
 
@@ -207,4 +208,81 @@ def radarplot_single_dataset(
     ax.set_ylim(0, 1)
 
     plt.title(title)
+    plt.show()
+
+def side_by_side_comp(
+    datasets: list,
+    metrics: list,
+    titles : list,
+    colors: list,
+    labels: list,
+    ) -> None:
+    """Two radarplots.
+
+    Warning, titles and colors must go in order of dataset1, dataset2
+    """
+    mpl.rcParams.update({
+        # --- CRITICAL: makes SVG self-contained ---
+        "svg.fonttype": "none",        # keep text as text (NOT paths)
+        "text.usetex": False,          # NEVER use LaTeX rendering
+        "font.family": "DejaVu Sans",  # safe default font
+
+        # --- avoids weird Inkscape flow elements ---
+        "path.simplify": True,
+        "pdf.fonttype": 42,
+        "ps.fonttype": 42,
+    })
+    metrics = [
+        "L_gracilis_lower_dice:",
+        "L_gracilis_jaccard",
+        "one_minus_falseNegative",
+        "one_minus_falsePositive"
+    ]
+    title1 = titles[0]
+    title2 = titles[1]
+    color1 = colors[0]
+    color2 = colors[1]
+    dataset1 = datasets[0]
+    dataset2 = datasets[1]
+    # Angles based on number of metrics
+    num_metrics = len(metrics)
+    angles = np.linspace(0, 2*np.pi, num_metrics, endpoint=False)
+    angles = np.append(angles, angles[0])
+
+    # Create ONE figure with TWO polar subplots
+    _, axes = plt.subplots(1, 2, figsize=(12,6), subplot_kw={"polar": True})
+
+    ax = axes[0]
+    for i in range(len(dataset1)):
+        row = dataset1.iloc[i]
+        values = row[metrics].to_numpy(dtype=float, copy=True)
+        values = np.append(values, values[0])
+        ax.plot(angles, values, color=color1, alpha=0.2)
+
+    ax.set_xticks(angles[:-1])
+    ax.set_xticklabels(labels)
+    for label in ax.get_xticklabels():
+        label.set_fontsize(10)
+        label.set_y(label.get_position()[1] - 0.08)
+    ax.set_ylim(0, 1)
+    ax.set_title(title1)
+
+    # ---- RIGHT: ----
+    ax = axes[1]
+    for i in range(len(dataset2)):
+        row = dataset2.iloc[i]
+        values = row[metrics].to_numpy(dtype=float, copy=True)
+        values = np.append(values, values[0])
+        ax.plot(angles, values, color=color2, alpha=0.2)
+
+    ax.set_xticks(angles[:-1])
+    ax.set_xticklabels(labels)
+    for label in ax.get_xticklabels():
+        label.set_fontsize(10)
+        label.set_y(label.get_position()[1] - 0.08)
+    ax.set_ylim(0, 1)
+    ax.set_title( title2)
+    plt.tight_layout()
+    plt.rcParams["svg.fonttype"] = "none"
+    plt.savefig("comprison_plot.png", dpi=300, bbox_inches="tight", transparent=False)
     plt.show()
