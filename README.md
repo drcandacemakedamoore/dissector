@@ -24,10 +24,10 @@
 
 Dissector is is an open-source python library which contains methods for medical image segmentation and the evaluation of medical image segmentation. 
 The module for evaluation contains methods to compare a segmentation to a 'ground truth' segmentation. This module should be run in it's own dedicated environment, which can be made in conda (see yaml environment_evaluation), pip or uv. Currently it has only been tested in conda, but the requirements are loose.  
-The metrics beyond the expected (hausdorf, jaccard, fp, fn, dice) implemented are : boundary intersection over union
+The metrics beyond the expected (hausdorf, jaccard, fp, fn, dice) implemented are : boundary intersection over union. Please note at present a much more robust group of metrics can be created with libraries like MONAI ( [metrics doc link] (https://monai-dev.readthedocs.io/en/latest/metrics.html) ). Metrics here are implemented for convenience i.e. no need to load pytorch, have lot of GPU space or cry as dependancies clash.
 The images
 can be extracted from [DICOM](https://www.dicomstandard.org/) files or used 
-directly. 
+directly (nifti or arrays). 
 The long term goal of the dissector project is to compare existing segmentation methods to a to be released state of the art method currently being built but not publicly released yet. This new method exploits the various types of noise in different MRI sequences...so computer science enthousiasts can probably guess the kind of model on the way. The primary authors are Candace Makeda H. Moore and Morris Alper.
 
 The project setup is documented in [project_setup.md](project_setup.md). Feel free to remove this document (and/or the link to this document) if you don't need it.

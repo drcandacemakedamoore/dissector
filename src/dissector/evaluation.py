@@ -1,4 +1,11 @@
+from __future__ import annotations
+from typing import TYPE_CHECKING
+import matplotlib.pyplot as plt
 import numpy as np
+
+if TYPE_CHECKING:
+    import pandas as pd
+
 
 def extract_boundary_2d(mask: np.ndarray) -> np.ndarray:
     """Get boundary pixels of a binary mask on 2d image."""
@@ -10,7 +17,7 @@ def extract_boundary_2d(mask: np.ndarray) -> np.ndarray:
             if not mask[i, j]:
                 continue
 
-            # Check 4-neighborhood
+            # check 4-neighborhood
             for di, dj in [(-1,0), (1,0), (0,-1), (0,1)]:
                 ni, nj = i + di, j + dj
                 if ni < 0 or ni >= h or nj < 0 or nj >= w or not mask[ni, nj]:
@@ -97,12 +104,13 @@ def dilate_3d(mask: np.ndarray, distance: int) -> np.ndarray:
     return dilated
 
 
-def boundary_iou_3d(distance: int, mask_a: np.ndarray, mask_b: np.ndarray):
-    """boundary iou from metric definition
-    same as boundary_iou_2d but done in 3d"""
+def boundary_iou_3d(distance: int, mask_a: np.ndarray, mask_b: np.ndarray) -> float:
+    """Boundary iou.
+
+    From metric definition same as boundary_iou_2d but done in 3d.
+    """
     b_a = extract_boundary_3d(mask_a)
     b_b = extract_boundary_3d(mask_b)
-
     d_a = dilate_3d(b_a, distance)
     d_b = dilate_3d(b_b, distance)
     intersection = np.logical_and(d_a, d_b).sum()
@@ -113,11 +121,13 @@ def boundary_iou_3d(distance: int, mask_a: np.ndarray, mask_b: np.ndarray):
 
     return intersection / union
 
-def boundary_iou_2d(distance: int, mask_a: np.ndarray, mask_b: np.ndarray):
-    """extracst boundary iou according to
-    formula from
-    https://metrics-reloaded.dkfz.de/metric-library/
-    boundary_intersection_over_union_local definition"""
+def boundary_iou_2d(distance: int, mask_a: np.ndarray, mask_b: np.ndarray) -> float:
+    """Extract boundary iou.
+
+    According to
+    formula from https://metrics-reloaded.dkfz.de/metric-library/
+    boundary_intersection_over_union_local definition.
+    """
     b_a = extract_boundary_2d(mask_a)
     b_b = extract_boundary_2d(mask_b)
 
@@ -125,21 +135,20 @@ def boundary_iou_2d(distance: int, mask_a: np.ndarray, mask_b: np.ndarray):
     d_b = dilate_2d(b_b, distance)
 
     intersection = np.logical_and(d_a, d_b).sum()
-    union =  d_a.sum() + d_b.sum() - intersection 
+    union =  d_a.sum() + d_b.sum() - intersection
 
     if union == 0:
         return 0.0
 
     return intersection / union
-# single row visualization function
 
-def single_row_viz(metrics, dataset, row, title):
 
-    """
+def single_row_viz(metrics: list, dataset: pd.dataframe, row: int, title: str ) -> None:
+    """Graph a single image.
+
     This visualizes a single row of metrics on a radar plot. metrics is a
-    list,dataset is the dataframe, row is the row number
+    list, dataset is the dataframe, row is the row number.
     """
-    import matplotlib.pyplot as plt
     row = dataset.iloc[row]
     values = row[metrics].values.astype(float)
     values = np.append(values, values[0])
@@ -151,7 +160,7 @@ def single_row_viz(metrics, dataset, row, title):
     # auto-generate readable labels
     labels = [m.replace("_", " ").strip(":") for m in metrics]
     # Plot
-    fig, ax = plt.subplots(figsize=(6, 6), subplot_kw=dict(polar=True))
+    _, ax = plt.subplots(figsize=(6, 6), subplot_kw=dict(polar=True))
 
     ax.plot(angles, values, "o-", linewidth=2)
     ax.fill(angles, values, alpha=0.25)
@@ -164,3 +173,38 @@ def single_row_viz(metrics, dataset, row, title):
     plt.title(title)
     plt.show()
 
+
+def radarplot_single_dataset(
+    metrics: list[str],
+    dataset: pd.DataFrame,
+    title: str,
+    labels: list[str] | None = None,
+) -> None:
+    """Plot a radar chart for all rows in a dataset.
+
+    If labels is None, metrics are used as axis labels.
+    """
+    if labels == None:
+        labels = metrics
+    # Create angles
+    num_metrics = len(metrics)
+    angles = np.linspace(0, 2*np.pi, num_metrics, endpoint=False)
+    angles = np.append(angles, angles[0])
+
+    # Create figure + polar axis
+    fig, ax = plt.subplots(figsize=(6,6), subplot_kw=dict(polar=True))
+
+    # Plot multiple samples
+    for i in range(len(dataset)):
+        row = dataset.iloc[i]
+        values = row[metrics].values.astype(float)
+        values = np.append(values, values[0])
+        ax.plot(angles, values, color="blue", alpha=0.4)
+
+    # Labels
+    ax.set_xticks(angles[:-1])
+    ax.set_xticklabels(labels)
+    ax.set_ylim(0, 1)
+
+    plt.title(title)
+    plt.show()

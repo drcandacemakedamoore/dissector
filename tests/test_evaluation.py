@@ -1,7 +1,8 @@
 """Tests for the dissector.diffusion module."""
 
 import numpy as np
-from dissector.evaluation import extract_boundary_2d, extract_boundary_3d
+from dissector.evaluation import extract_boundary_2d
+from dissector.evaluation import extract_boundary_3d
 
 
 def test_extract_boundary_2d():
