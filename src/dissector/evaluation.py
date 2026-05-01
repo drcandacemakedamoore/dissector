@@ -150,7 +150,7 @@ def single_row_viz(metrics: list, dataset: pd.dataframe, row: int, title: str ) 
     list, dataset is the dataframe, row is the row number.
     """
     row = dataset.iloc[row]
-    values = row[metrics].values.astype(float)
+    values = row[metrics].to_numpy(dtype=float, copy=True)#.astype(float)
     values = np.append(values, values[0])
     # Angles based on number of metrics
     num_metrics = len(metrics)
@@ -160,7 +160,7 @@ def single_row_viz(metrics: list, dataset: pd.dataframe, row: int, title: str ) 
     # auto-generate readable labels
     labels = [m.replace("_", " ").strip(":") for m in metrics]
     # Plot
-    _, ax = plt.subplots(figsize=(6, 6), subplot_kw=dict(polar=True))
+    _, ax = plt.subplots(figsize=(6, 6), subplot_kw={"polar": True})
 
     ax.plot(angles, values, "o-", linewidth=2)
     ax.fill(angles, values, alpha=0.25)
@@ -184,7 +184,7 @@ def radarplot_single_dataset(
 
     If labels is None, metrics are used as axis labels.
     """
-    if labels == None:
+    if labels is None:
         labels = metrics
     # Create angles
     num_metrics = len(metrics)
@@ -192,12 +192,12 @@ def radarplot_single_dataset(
     angles = np.append(angles, angles[0])
 
     # Create figure + polar axis
-    fig, ax = plt.subplots(figsize=(6,6), subplot_kw=dict(polar=True))
+    _, ax = plt.subplots(figsize=(6,6), subplot_kw={"polar": True})
 
     # Plot multiple samples
     for i in range(len(dataset)):
         row = dataset.iloc[i]
-        values = row[metrics].values.astype(float)
+        values = row[metrics].to_numpy(dtype=float, copy=True)#.astype(float)
         values = np.append(values, values[0])
         ax.plot(angles, values, color="blue", alpha=0.4)
 
