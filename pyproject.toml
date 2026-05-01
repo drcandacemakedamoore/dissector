@@ -83,10 +83,10 @@ extras = dev
 [tool.ruff]
 line-length = 120
 output-format = "concise"
-extend-exclude = ["docs"]
+#extend-exclude = ["docs"]
+extend-exclude = ["docs", "*.ipynb"]
 
 [tool.ruff.lint]
-#ignore = ["COM812"]
 # Allow unused variables when underscore-prefixed.
 dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 extend-per-file-ignores = { "**/*.ipynb" = ["ALL"] }
