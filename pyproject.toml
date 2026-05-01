@@ -86,7 +86,7 @@ output-format = "concise"
 extend-exclude = ["docs"]
 
 [tool.ruff.lint]
-ignore = ["COM812"]
+#ignore = ["COM812"]
 # Allow unused variables when underscore-prefixed.
 dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 extend-per-file-ignores = { "**/*.ipynb" = ["ALL"] }
@@ -98,6 +98,7 @@ ignore = [
     "ANN101", # Missing type annotation for `self` in method
     "ANN102", # Missing type annotation for `cls` in classmethod
     "ANN204", # Missing return type annotation for special (dunder) method
+    "COM812",
     "FBT",    # Using boolean function arguments
     "TD",     # TODOs
     "FIX001", # Resolve FIXMEs
