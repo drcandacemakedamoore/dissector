@@ -99,6 +99,15 @@ def dilate_3d(mask: np.ndarray, distance: int) -> np.ndarray:
     return dilated
 
 
+def binary_cross_entropy(y_true: np.ndarray, y_pred: np.ndarray, eps: float = 1e-7) -> float:
+    """Binary cross entropy between two binary segmentation masks.
+
+    Clips y_pred to [eps, 1-eps] so that exact 0/1 voxels don't produce log(0).
+    """
+    y_pred_clipped = np.clip(y_pred, eps, 1 - eps)
+    return -np.mean(y_true * np.log(y_pred_clipped) + (1 - y_true) * np.log(1 - y_pred_clipped))
+
+
 def boundary_iou_3d(distance: int, mask_a: np.ndarray, mask_b: np.ndarray) -> float:
     """Boundary iou.
 
