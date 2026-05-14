@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 
 if TYPE_CHECKING:
     import pandas as pd
@@ -286,4 +287,64 @@ def side_by_side_comp(
     plt.tight_layout()
     plt.rcParams["svg.fonttype"] = "none"
     plt.savefig("comprison_plot.png", dpi=300, bbox_inches="tight", transparent=False)
+    plt.show()
+
+
+def violin_compare(
+    csv_list_a: list[str],
+    csv_list_b: list[str],
+    label_a: str = "Algorithm A",
+    label_b: str = "Algorithm B",
+    metrics: list[str] | None = None,
+    save_path: str | None = None,
+) -> None:
+    """Violin plots comparing two sets of segmentation results across CSV files.
+
+    Each CSV list comes from one segmentation algorithm. Shared numeric columns
+    (or an explicit metrics list) are plotted side by side as paired violins.
+    """
+
+    def _load(csv_list: list[str]) -> pd.DataFrame:
+        frames = [pd.read_csv(p, index_col=0) for p in csv_list]
+        return pd.concat(frames, ignore_index=True)
+
+    df_a = _load(csv_list_a)
+    df_b = _load(csv_list_b)
+
+    if metrics is None:
+        metrics = [
+            c for c in df_a.columns
+            if c in df_b.columns
+            and pd.api.types.is_numeric_dtype(df_a[c])
+            and pd.api.types.is_numeric_dtype(df_b[c])
+        ]
+
+    if not metrics:
+        raise ValueError("No shared numeric columns found between the two CSV sets.")
+
+    n = len(metrics)
+    fig, axes = plt.subplots(1, n, figsize=(4 * n, 5))
+    if n == 1:
+        axes = [axes]
+
+    colors = ["steelblue", "tomato"]
+
+    for ax, metric in zip(axes, metrics):
+        data_a = df_a[metric].dropna().to_numpy()
+        data_b = df_b[metric].dropna().to_numpy()
+
+        parts = ax.violinplot([data_a, data_b], positions=[1, 2], showmedians=True)
+        for patch, color in zip(parts["bodies"], colors):
+            patch.set_facecolor(color)
+            patch.set_alpha(0.7)
+
+        ax.set_xticks([1, 2])
+        ax.set_xticklabels([label_a, label_b], rotation=15, ha="right")
+        ax.set_title(metric.replace("_", " ").strip(":"), fontsize=9)
+
+    fig.suptitle(f"{label_a} vs {label_b}", fontsize=12, y=1.01)
+    plt.tight_layout()
+
+    if save_path:
+        plt.savefig(save_path, dpi=150, bbox_inches="tight")
     plt.show()

@@ -56,3 +56,8 @@ have a look at the [contribution guidelines](CONTRIBUTING.md).
 ## Credits
 
 This package was created with [Copier](https://github.com/copier-org/copier) and the [NLeSC/python-template](https://github.com/NLeSC/python-template).
+
+
+## Generative AI disclosure
+
+This package has some code created with the aid of generative AI. 
