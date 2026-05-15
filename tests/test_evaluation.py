@@ -1,5 +1,9 @@
-"""Tests for the dissector.diffusion module. Please note some of these tests were developed with the aid of generative AI, but
-have been checked by the creators."""
+"""Tests for the dissector.diffusion module.
+
+Please note some of these tests were developed with the aid of generative AI, but
+have been checked by the creators.
+"""
+
 
 import numpy as np
 from dissector.evaluation import binary_cross_entropy

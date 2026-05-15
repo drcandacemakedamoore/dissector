@@ -1,12 +1,8 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-
-if TYPE_CHECKING:
-    import pandas as pd
 
 
 def extract_boundary_2d(mask: np.ndarray) -> np.ndarray:
@@ -290,7 +286,7 @@ def side_by_side_comp(
     plt.show()
 
 
-def violin_compare(
+def violin_compare(  # noqa: PLR0913
     csv_list_a: list[str],
     csv_list_b: list[str],
     label_a: str = "Algorithm A",
@@ -320,7 +316,8 @@ def violin_compare(
         ]
 
     if not metrics:
-        raise ValueError("No shared numeric columns found between the two CSV sets.")
+        msg = "No shared numeric columns found between the two CSV sets."
+        raise ValueError(msg)
 
     n = len(metrics)
     fig, axes = plt.subplots(1, n, figsize=(4 * n, 5))
