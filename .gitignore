@@ -79,9 +79,7 @@ eval_notebooks/ground_truths
 eval_notebooks/MuscleMap_segs
 /eval_notebooks/MuscleMap_thigh_segs
 eval_notebooks/MuscleMap_thigh_segs
-/eval_notebooks/dafne_thigh_results
-eval_notebooks/dafne_thigh_results
-!eval_notebooks/dafne_thigh_results/evaluation_code/**
+eval_notebooks/dafne_thigh_results/*.npz
 
 copy_back.sh
 bash_fat_frac_move.sh
