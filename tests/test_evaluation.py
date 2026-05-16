@@ -9,6 +9,7 @@ import numpy as np
 from dissector.evaluation import binary_cross_entropy
 from dissector.evaluation import extract_boundary_2d
 from dissector.evaluation import extract_boundary_3d
+from dissector.evaluation import inter_slice_dice
 
 
 def test_extract_boundary_2d():
@@ -70,6 +71,30 @@ def test_binary_cross_entropy():
     perfect_result = binary_cross_entropy(ground_truth, ground_truth)
     assert perfect_result < result
     assert result < zero_overlap_result
+
+def test_inter_slice_dice():
+    """Inter-slice Dice is higher for smooth masks than for discontinuous ones."""
+    mask = np.zeros((10, 8, 8), dtype=np.uint8)
+
+    # slices 0-4: identical filled square — perfect continuity
+    mask[0:5, 2:6, 2:6] = 1
+
+    # slices 5-9: square shifts by 4 pixels each slice — poor continuity
+    mask[5, 2:6, 2:6] = 1
+    mask[6, 3:7, 3:7] = 1  # shifted 1
+    mask[7, 4:8, 4:8] = 1  # shifted 2, partial overlap
+    mask[8, 0:2, 0:2] = 1  # no overlap with slice 7
+    mask[9, 6:8, 6:8] = 1  # no overlap with slice 8
+
+    # score over the smooth region (slices 0-4)
+    smooth_score = inter_slice_dice(mask[0:5])
+
+    # score over the discontinuous region (slices 5-9)
+    discontinuous_score = inter_slice_dice(mask[5:10])
+
+    assert smooth_score == 1.0
+    assert discontinuous_score < smooth_score
+
 
 def test_binary_cross_entropy_probalities():
     """BCE on a small binary array with near-perfect predictions."""

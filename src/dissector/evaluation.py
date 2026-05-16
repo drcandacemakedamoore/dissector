@@ -105,6 +105,25 @@ def binary_cross_entropy(y_true: np.ndarray, y_pred: np.ndarray, eps: float = 1e
     return -np.mean(y_true * np.log(y_pred_clipped) + (1 - y_true) * np.log(1 - y_pred_clipped))
 
 
+def inter_slice_dice(mask: np.ndarray) -> float:
+    """Mean Dice between every pair of adjacent slices in a 3D binary mask.
+
+    mask shape: (slices, H, W). Returns a value in [0, 1]; higher means
+    smoother continuity across slices. Pairs where both slices are empty
+    are skipped; a slice with no foreground paired against a non-empty one
+    contributes 0.
+    """
+    scores = []
+    for i in range(mask.shape[0] - 1):
+        a = mask[i].astype(bool)
+        b = mask[i + 1].astype(bool)
+        denom = a.sum() + b.sum()
+        if denom == 0:
+            continue
+        scores.append(2 * np.logical_and(a, b).sum() / denom)
+    return float(np.mean(scores)) if scores else 0.0
+
+
 def boundary_iou_3d(distance: int, mask_a: np.ndarray, mask_b: np.ndarray) -> float:
     """Boundary iou.
 
