@@ -1,0 +1,56 @@
+/* dissector — green theme overrides for sphinx_rtd_theme */
+
+/* Navigation header */
+.wy-nav-top,
+.wy-side-nav-search {
+    background-color: #2e7d32;
+}
+
+/* Sidebar links hover and active */
+.wy-menu-vertical a:hover,
+.wy-menu-vertical li.current > a {
+    background-color: #388e3c;
+    color: #ffffff;
+}
+
+.wy-menu-vertical li.current {
+    background-color: #1b5e20;
+}
+
+/* Inline code and literals */
+code, .rst-content code, .rst-content tt {
+    color: #2e7d32;
+    background-color: #f1f8e9;
+    border: 1px solid #c8e6c9;
+}
+
+/* Links */
+a, .rst-content a {
+    color: #388e3c;
+}
+
+a:hover, .rst-content a:hover {
+    color: #1b5e20;
+}
+
+/* Version badge in sidebar */
+.wy-side-nav-search > div.version {
+    color: #c8e6c9;
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: #2e7d32;
+    border-color: #1b5e20;
+}
+
+/* Note / tip admonitions */
+.rst-content .note .admonition-title,
+.rst-content .tip .admonition-title {
+    background-color: #388e3c;
+}
+
+.rst-content .note,
+.rst-content .tip {
+    border-left-color: #388e3c;
+}

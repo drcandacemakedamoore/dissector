@@ -70,11 +70,13 @@ autoapi_dirs = ['../src/dissector']
 #
 html_theme = "sphinx_rtd_theme"
 
-# Theme options are theme-specific and customize the look and feel of a theme
-# further.  For a list of options available for each theme, see the
-# documentation.
-#
-# html_theme_options = {}
+html_theme_options = {
+    "style_nav_header_background": "#2e7d32",
+    "navigation_depth": 3,
+}
+
+html_static_path = ["_static"]
+html_css_files = ["custom.css"]
 
 # -- Options for Intersphinx
 
