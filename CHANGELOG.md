@@ -1,6 +1,6 @@
 # Changelog
 
-## [v0.0.4] - 2026-4-18
+## [v0.0.4] - 2026-05-18
 
 ### Added
 - MedSAM refinement notebooks: bounding-box prompt, whole-mask prompt, logit-scaled mask prompt
