@@ -81,6 +81,8 @@ eval_notebooks/MuscleMap_segs
 eval_notebooks/MuscleMap_thigh_segs
 eval_notebooks/dafne_thigh_results/*.npz
 eval_notebooks/dafne_thigh_results/model_used
+eval_notebooks/**/*.npz
+eval_notebooks/*.npz
 
 copy_back.sh
 bash_fat_frac_move.sh
