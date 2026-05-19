@@ -60,4 +60,4 @@ This package was created with [Copier](https://github.com/copier-org/copier) and
 
 ## Generative AI disclosure
 
-This package has some code created with the aid of generative AI. 
+This package has some code created with the aid of generative AI. All code on the main branch and in releases is human author written and/or reviewed. 
