@@ -35,7 +35,7 @@ coverage.xml
 .tox/
 
 # Sphinx documentation
-#docs/_build
+docs/_build/
 
 # ide
 # PyCharm
@@ -67,6 +67,10 @@ venv.bak/
 *.swp
 *.swo
 *.orig
+
+# large data files
+*.nii
+*.nii.gz
 
 # data
 /eval_notebooks/myosegmenTUM/*/ImageData
