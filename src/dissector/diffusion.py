@@ -1,7 +1,6 @@
 """Documentation about the dissector module."""
 
 from __future__ import annotations
-
 import numpy as np
 from scipy.ndimage import binary_closing
 from scipy.ndimage import binary_erosion
@@ -41,12 +40,12 @@ def estimate_dixon_noise(
     Returns:
         dict with keys:
 
-        * ``water_noise_std``    – noise σ in the water channel
-        * ``fat_noise_std``      – noise σ in the fat channel
-        * ``water_snr``          – SNR of the water channel
-        * ``fat_snr``            – SNR of the fat channel
-        * ``noise_ratio``        – water_noise_std / fat_noise_std
-        * ``n_background_voxels``– number of voxels used for estimation
+        * ``water_noise_std``    - noise std in the water channel
+        * ``fat_noise_std``      - noise std in the fat channel
+        * ``water_snr``          - SNR of the water channel
+        * ``fat_snr``            - SNR of the fat channel
+        * ``noise_ratio``        - water_noise_std / fat_noise_std
+        * ``n_background_voxels``- number of voxels used for estimation
 
     Raises:
         ValueError: if *water* and *fat* have different shapes, or if no
@@ -148,7 +147,7 @@ def find_body_oval(
             Empty (all False) if no body region is found.
     """
     arr = np.asarray(slice_2d, dtype=float)
-    H, W = arr.shape
+    h, w = arr.shape
 
     # edge map from local std
     std = generic_filter(arr, np.std, size=kernel_size)
@@ -176,7 +175,7 @@ def find_body_oval(
         if size > best_size:
             best_size, best_lbl = size, lbl
 
-    empty = np.zeros((H, W), dtype=bool)
+    empty = np.zeros((h, w), dtype=bool)
     if best_lbl == 0:
         return empty, empty
 

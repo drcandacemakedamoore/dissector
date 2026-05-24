@@ -1,6 +1,7 @@
 from __future__ import annotations
 import hashlib
 import os
+from pathlib import Path
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
@@ -17,10 +18,10 @@ def compare_folders(folder_a: str, folder_b: str) -> bool:
         index = {}
         for root, _, files in os.walk(folder):
             for name in files:
-                path = os.path.join(root, name)
+                path = Path(root) / name
                 rel  = os.path.relpath(path, folder)
                 h    = hashlib.sha256()
-                with open(path, "rb") as f:
+                with path.open("rb") as f:
                     for chunk in iter(lambda: f.read(1 << 20), b""):
                         h.update(chunk)
                 index[rel] = h.hexdigest()
@@ -34,16 +35,13 @@ def compare_folders(folder_a: str, folder_b: str) -> bool:
     differ  = sorted(k for k in idx_a.keys() & idx_b.keys() if idx_a[k] != idx_b[k])
 
     if not (only_a or only_b or differ):
-        print(f"✓ Folders are identical ({len(idx_a)} files).")
+        print(f"✓ Folders are identical ({len(idx_a)} files).")  # noqa: T201
         return True
 
     lines = [f"Folders differ:  '{folder_a}'  vs  '{folder_b}'"]
-    for f in only_a:
-        lines.append(f"  only in A : {f}")
-    for f in only_b:
-        lines.append(f"  only in B : {f}")
-    for f in differ:
-        lines.append(f"  hash diff : {f}")
+    lines.extend(f"  only in A : {f}" for f in only_a)
+    lines.extend(f"  only in B : {f}" for f in only_b)
+    lines.extend(f"  hash diff : {f}" for f in differ)
     raise AssertionError("\n".join(lines))
 
 

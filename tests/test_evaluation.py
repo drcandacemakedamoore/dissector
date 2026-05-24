@@ -5,6 +5,7 @@ have been checked by the creators.
 """
 
 
+from pathlib import Path
 import numpy as np
 import pytest
 from dissector.evaluation import binary_cross_entropy
@@ -98,7 +99,7 @@ def test_inter_slice_dice():
     assert discontinuous_score < smooth_score
 
 
-def test_compare_folders_identical(tmp_path):
+def test_compare_folders_identical(tmp_path: Path):
     """compare_folders returns True when two folders have identical files."""
     a = tmp_path / "a"
     b = tmp_path / "b"
@@ -111,7 +112,7 @@ def test_compare_folders_identical(tmp_path):
     assert compare_folders(str(a), str(b)) is True
 
 
-def test_compare_folders_content_differs(tmp_path):
+def test_compare_folders_content_differs(tmp_path: Path):
     """compare_folders raises AssertionError when file content differs."""
     a = tmp_path / "a"
     b = tmp_path / "b"
@@ -123,7 +124,7 @@ def test_compare_folders_content_differs(tmp_path):
         compare_folders(str(a), str(b))
 
 
-def test_compare_folders_missing_file(tmp_path):
+def test_compare_folders_missing_file(tmp_path: Path):
     """compare_folders raises AssertionError when a file exists only in one folder."""
     a = tmp_path / "a"
     b = tmp_path / "b"
