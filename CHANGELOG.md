@@ -6,7 +6,7 @@
 - Experimental noise finder for Dixon
 - Edge finder function local_std_map function
 - fInd_body_oval function to find body in MRI
-- FOlder comparison by hashing
+- FOlder comparison and file comparison functions by hashing
 
 ### Changed
 

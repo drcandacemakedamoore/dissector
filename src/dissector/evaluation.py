@@ -45,6 +45,40 @@ def compare_folders(folder_a: str, folder_b: str) -> bool:
     raise AssertionError("\n".join(lines))
 
 
+def compare_images(path_a: str, path_b: str) -> bool:
+    """Hash two image files and assert they are identical.
+
+    Computes SHA-256 of each file and raises AssertionError if they differ.
+    Returns True if the files are byte-for-byte identical.
+
+    Args:
+        path_a: path to the first image file.
+        path_b: path to the second image file.
+
+    Returns:
+        True if both files have the same SHA-256 hash.
+
+    Raises:
+        AssertionError: if the hashes differ, with both paths in the message.
+    """
+    def _hash(path: str) -> str:
+        h = hashlib.sha256()
+        with Path(path).open("rb") as f:
+            for chunk in iter(lambda: f.read(1 << 20), b""):
+                h.update(chunk)
+        return h.hexdigest()
+
+    hash_a = _hash(path_a)
+    hash_b = _hash(path_b)
+
+    if hash_a == hash_b:
+        print(f"✓ Images are identical: {path_a}")  # noqa: T201
+        return True
+
+    msg = f"Images differ:\n  A: {path_a}  ({hash_a})\n  B: {path_b}  ({hash_b})"
+    raise AssertionError(msg)
+
+
 def extract_boundary_2d(mask: np.ndarray) -> np.ndarray:
     """Get boundary pixels of a binary mask on 2d image."""
     h, w = mask.shape

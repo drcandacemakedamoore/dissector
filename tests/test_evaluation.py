@@ -10,6 +10,7 @@ import numpy as np
 import pytest
 from dissector.evaluation import binary_cross_entropy
 from dissector.evaluation import compare_folders
+from dissector.evaluation import compare_images
 from dissector.evaluation import extract_boundary_2d
 from dissector.evaluation import extract_boundary_3d
 from dissector.evaluation import inter_slice_dice
@@ -133,6 +134,28 @@ def test_compare_folders_missing_file(tmp_path: Path):
     (a / "only_in_a.txt").write_bytes(b"data")
     with pytest.raises(AssertionError, match="only in A"):
         compare_folders(str(a), str(b))
+
+
+def test_compare_images_identical(tmp_path: Path):
+    """compare_images returns True when two files contain the same array."""
+    arr = np.arange(100, dtype=np.uint8).reshape(10, 10)
+    file_a = tmp_path / "a.npy"
+    file_b = tmp_path / "b.npy"
+    np.save(str(file_a), arr)
+    np.save(str(file_b), arr)
+    assert compare_images(str(file_a), str(file_b)) is True
+
+
+def test_compare_images_differ(tmp_path: Path):
+    """compare_images raises AssertionError when two files differ."""
+    arr_a = np.zeros((10, 10), dtype=np.uint8)
+    arr_b = np.ones((10, 10), dtype=np.uint8)
+    file_a = tmp_path / "a.npy"
+    file_b = tmp_path / "b.npy"
+    np.save(str(file_a), arr_a)
+    np.save(str(file_b), arr_b)
+    with pytest.raises(AssertionError, match="Images differ"):
+        compare_images(str(file_a), str(file_b))
 
 
 def test_binary_cross_entropy_probalities():
