@@ -6,7 +6,9 @@ have been checked by the creators.
 
 
 import numpy as np
+import pytest
 from dissector.evaluation import binary_cross_entropy
+from dissector.evaluation import compare_folders
 from dissector.evaluation import extract_boundary_2d
 from dissector.evaluation import extract_boundary_3d
 from dissector.evaluation import inter_slice_dice
@@ -94,6 +96,42 @@ def test_inter_slice_dice():
 
     assert smooth_score == 1.0
     assert discontinuous_score < smooth_score
+
+
+def test_compare_folders_identical(tmp_path):
+    """compare_folders returns True when two folders have identical files."""
+    a = tmp_path / "a"
+    b = tmp_path / "b"
+    a.mkdir()
+    b.mkdir()
+    (a / "file1.txt").write_bytes(b"hello")
+    (a / "file2.txt").write_bytes(b"world")
+    (b / "file1.txt").write_bytes(b"hello")
+    (b / "file2.txt").write_bytes(b"world")
+    assert compare_folders(str(a), str(b)) is True
+
+
+def test_compare_folders_content_differs(tmp_path):
+    """compare_folders raises AssertionError when file content differs."""
+    a = tmp_path / "a"
+    b = tmp_path / "b"
+    a.mkdir()
+    b.mkdir()
+    (a / "file.txt").write_bytes(b"hello")
+    (b / "file.txt").write_bytes(b"HELLO")
+    with pytest.raises(AssertionError, match="hash diff"):
+        compare_folders(str(a), str(b))
+
+
+def test_compare_folders_missing_file(tmp_path):
+    """compare_folders raises AssertionError when a file exists only in one folder."""
+    a = tmp_path / "a"
+    b = tmp_path / "b"
+    a.mkdir()
+    b.mkdir()
+    (a / "only_in_a.txt").write_bytes(b"data")
+    with pytest.raises(AssertionError, match="only in A"):
+        compare_folders(str(a), str(b))
 
 
 def test_binary_cross_entropy_probalities():

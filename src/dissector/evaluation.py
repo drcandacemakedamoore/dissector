@@ -1,8 +1,50 @@
 from __future__ import annotations
+import hashlib
+import os
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+
+
+def compare_folders(folder_a: str, folder_b: str) -> bool:
+    """Hash every file in two folders and assert they are identical.
+
+    Compares file names and SHA-256 content. Raises AssertionError with a
+    human-readable diff if anything differs. Returns True if identical.
+    """
+    def _index(folder: str) -> dict[str, str]:
+        index = {}
+        for root, _, files in os.walk(folder):
+            for name in files:
+                path = os.path.join(root, name)
+                rel  = os.path.relpath(path, folder)
+                h    = hashlib.sha256()
+                with open(path, "rb") as f:
+                    for chunk in iter(lambda: f.read(1 << 20), b""):
+                        h.update(chunk)
+                index[rel] = h.hexdigest()
+        return index
+
+    idx_a = _index(folder_a)
+    idx_b = _index(folder_b)
+
+    only_a  = sorted(set(idx_a) - set(idx_b))
+    only_b  = sorted(set(idx_b) - set(idx_a))
+    differ  = sorted(k for k in idx_a.keys() & idx_b.keys() if idx_a[k] != idx_b[k])
+
+    if not (only_a or only_b or differ):
+        print(f"✓ Folders are identical ({len(idx_a)} files).")
+        return True
+
+    lines = [f"Folders differ:  '{folder_a}'  vs  '{folder_b}'"]
+    for f in only_a:
+        lines.append(f"  only in A : {f}")
+    for f in only_b:
+        lines.append(f"  only in B : {f}")
+    for f in differ:
+        lines.append(f"  hash diff : {f}")
+    raise AssertionError("\n".join(lines))
 
 
 def extract_boundary_2d(mask: np.ndarray) -> np.ndarray:
