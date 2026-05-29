@@ -14,8 +14,8 @@ authors:
     given-names: Morris
     orcid: "https://orcid.org/0000-0002-3533-7602"
 
-date-released: 2026-05-17
-version: "0.0.4"
+date-released: 2026-05-29
+version: "0.0.5"
 repository-code: "https://github.com/drcandacemakedamoore/dissector"
 keywords:
   - "segmentation"
