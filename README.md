@@ -30,6 +30,38 @@ can be extracted from [DICOM](https://www.dicomstandard.org/) files or used
 directly (nifti or arrays). 
 The long term goal of the dissector project is to compare existing segmentation methods to a to be released state of the art method currently being built but not publicly released yet. This new method exploits the various types of noise in different MRI sequences...so computer science enthousiasts can probably guess the kind of model on the way. The primary authors are Candace Makeda H. Moore and Morris Alper.
 
+At current we are  testing all kinds of models. This included adapting one model:
+
+
+### A MedSegDiff adaptation (`medsegdiff/`)
+
+The `medsegdiff/` directory contains an adaptation of
+[MedSegDiff](https://github.com/WuJunde/MedSegDiff) — a denoising diffusion
+probabilistic model (DDPM) for medical image segmentation — applied to Dixon MRI
+thigh muscle segmentation on the myosegmenTUM dataset.
+
+The original MedSegDiff algorithm was developed by:
+
+> Wu, J., Fu, R., Fang, H., Zhang, Y., Yang, Y., Xiong, H., Liu, H., & Xu, Y. (2024).
+> **MedSegDiff-V2: Diffusion-Based Medical Image Segmentation with Transformer.**
+> *Proceedings of the AAAI Conference on Artificial Intelligence.*
+
+> Wu, J., Fu, R., Fang, H., Zhang, Y., & Xu, Y. (2023).
+> **MedSegDiff: Medical Image Segmentation with Diffusion Probabilistic Model.**
+> *Medical Imaging with Deep Learning (MIDL).*
+
+The original code is available at <https://github.com/WuJunde/MedSegDiff> under
+its respective licence. The implementation in this repository is an independent
+re-implementation that adapts the core DDPM ε-prediction paradigm to two-channel
+Dixon (water + fat-fraction) conditioning with four binary per-muscle models.
+
+**Note:** `medsegdiff/` is a standalone training and inference tool directory —
+it is intentionally kept outside `src/` and is **not** part of the installable
+`dissector` Python package. The scripts (`train.py`, `predict.py`) are meant to
+be run directly (e.g. `python medsegdiff/train.py --muscle R_gracilis`) and are
+not importable as dissector library code.
+
+
 The project setup is documented in [project_setup.md](project_setup.md). Feel free to remove this document (and/or the link to this document) if you don't need it.
 
 ## Installation
@@ -52,6 +84,9 @@ One source should be https://drcandacemakedamoore.github.io/dissector/. Pypi and
 
 If you want to contribute to the development of dissector,
 have a look at the [contribution guidelines](CONTRIBUTING.md).
+
+
+
 
 ## Credits
 
