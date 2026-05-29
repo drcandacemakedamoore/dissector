@@ -68,9 +68,10 @@ venv.bak/
 *.swo
 *.orig
 
-# large data files
+# large data files (images)
 *.nii
 *.nii.gz
+*.png
 
 # data
 /eval_notebooks/myosegmenTUM/*/ImageData
@@ -93,6 +94,12 @@ eval_notebooks/multimodal_thigh_segs/
 eval_notebooks/museg_thigh_segs/
 eval_notebooks/dafne/extras/dafne_thigh_results/model_used/
 eval_notebooks/dafne/extras/model/
+OLDeval_notebooks/
+/OLDeval_notebooks
+/summary_results
+summary_results
 
+/summary_results_P_only
+summary_results_P_only
 copy_back.sh
 bash_fat_frac_move.sh
