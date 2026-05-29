@@ -1,5 +1,4 @@
-"""
-DDPM / DDIM diffusion utilities for binary mask segmentation.
+"""DDPM / DDIM diffusion utilities for binary mask segmentation.
 
 Forward process  : q(x_t | x_0) = N(sqrt(ᾱ_t)·x_0, (1-ᾱ_t)·I)
 Training loss    : MSE(ε_θ(x_t, t, img), ε)
@@ -9,8 +8,6 @@ Masks live in [-1, +1].  After sampling, threshold at 0 to recover {0,1}.
 """
 
 from __future__ import annotations
-
-import numpy as np
 import torch
 import torch.nn.functional as F
 
@@ -21,13 +18,13 @@ def _linear_beta_schedule(T: int, beta_start: float = 1e-4, beta_end: float = 0.
 
 
 class GaussianDiffusion:
-    """
-    Parameters
-    ----------
-    T           : total diffusion steps (1 000 is standard)
-    beta_start  : noise schedule start value
-    beta_end    : noise schedule end value
-    device      : torch device
+    """DDPM noise schedule and sampling utilities.
+
+    Args:
+        T: total diffusion steps (1000 is standard).
+        beta_start: noise schedule start value.
+        beta_end: noise schedule end value.
+        device: torch device.
     """
 
     def __init__(
@@ -35,7 +32,7 @@ class GaussianDiffusion:
         T: int = 1000,
         beta_start: float = 1e-4,
         beta_end: float = 0.02,
-        device: str | torch.device = 'cpu',
+        device: str | torch.device = "cpu",
     ) -> None:
         self.T = T
         betas = _linear_beta_schedule(T, beta_start, beta_end).to(device)
@@ -54,8 +51,7 @@ class GaussianDiffusion:
     def q_sample(
         self, x0: torch.Tensor, t: torch.Tensor, noise: torch.Tensor | None = None
     ) -> tuple[torch.Tensor, torch.Tensor]:
-        """
-        Sample x_t ~ q(x_t | x_0) using the closed-form marginal.
+        """Sample x_t ~ q(x_t | x_0) using the closed-form marginal.
 
         Returns (x_t, noise) — noise is generated here if not supplied.
         """
@@ -74,8 +70,7 @@ class GaussianDiffusion:
         img: torch.Tensor,
         t: torch.Tensor,
     ) -> torch.Tensor:
-        """
-        Standard DDPM ε-prediction loss.
+        """Standard DDPM ε-prediction loss.
 
         x0  : (B, 1, H, W) clean mask in [-1, 1]
         img : (B, C, H, W) conditioning image in [-1, 1]
@@ -96,8 +91,7 @@ class GaussianDiffusion:
         num_steps: int = 50,
         eta: float = 0.0,
     ) -> torch.Tensor:
-        """
-        DDIM reverse diffusion conditioned on img.
+        """DDIM reverse diffusion conditioned on img.
 
         img       : (B, C, H, W) conditioning image in [-1, 1]
         num_steps : number of denoising steps (default 50)

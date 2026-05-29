@@ -1,5 +1,4 @@
-"""
-myosegmenTUM dataset for diffusion-based thigh muscle segmentation.
+"""myosegmenTUM dataset for diffusion-based thigh muscle segmentation.
 
 Each sample is a 2D axial slice from a Dixon water stack, optionally paired
 with the corresponding fat-fraction slice as a second input channel.
@@ -11,19 +10,18 @@ import glob
 import os
 import random
 import re
-
 import numpy as np
 import SimpleITK as sitk
 import torch
-from torch.utils.data import Dataset
 import torchvision.transforms.functional as TF
+from torch.utils.data import Dataset
 
 # GT label index for each muscle in combined_gt_stack*.mha
 GT_LABELS: dict[str, int] = {
-    'R_gracilis':  5,
-    'L_gracilis':  1,
-    'R_sartorius': 8,
-    'L_sartorius': 4,
+    "R_gracilis":  5,
+    "L_gracilis":  1,
+    "R_sartorius": 8,
+    "L_sartorius": 4,
 }
 
 
@@ -46,6 +44,16 @@ def discover_subjects(gt_base: str) -> list[str]:
 
 def train_val_split(subjects: list[str], val_fraction: float = 0.2, seed: int = 42
                     ) -> tuple[list[str], list[str]]:
+    """Split subject list into train and validation sets by subject (not by slice).
+
+    Args:
+        subjects: sorted list of subject IDs.
+        val_fraction: fraction of subjects to use for validation.
+        seed: random seed for reproducibility.
+
+    Returns:
+        Tuple of (train_subjects, val_subjects).
+    """
     rng = random.Random(seed)
     s = list(subjects)
     rng.shuffle(s)
@@ -54,10 +62,11 @@ def train_val_split(subjects: list[str], val_fraction: float = 0.2, seed: int = 
 
 
 class DixonThighDataset(Dataset):
-    """
+    """Dataset of 2D axial slices for diffusion-based muscle segmentation.
+
     Yields (img, mask) pairs where:
-      img  — (C, img_size, img_size) float32 in [-1, 1]; C=1 water or C=2 water+FF
-      mask — (1, img_size, img_size) float32 in {-1, +1}
+    img  — (C, img_size, img_size) float32 in [-1, 1]; C=1 water or C=2 water+FF.
+    mask — (1, img_size, img_size) float32 in {-1, +1}.
     """
 
     def __init__(
@@ -70,7 +79,9 @@ class DixonThighDataset(Dataset):
         augment: bool = True,
         min_fg_voxels: int = 50,
     ) -> None:
-        assert muscle in GT_LABELS, f'Unknown muscle "{muscle}". Choose from {list(GT_LABELS)}'
+        if muscle not in GT_LABELS:
+            msg = f'Unknown muscle "{muscle}". Choose from {list(GT_LABELS)}'
+            raise ValueError(msg)
         self.gt_label = GT_LABELS[muscle]
         self.img_size = img_size
         self.use_ff = use_ff
@@ -85,15 +96,15 @@ class DixonThighDataset(Dataset):
         for subj in subjects:
             subj_dir = os.path.join(gt_base, subj)
             water_glob = os.path.join(
-                subj_dir, 'ImageData', f'{subj}_WATER', f'{subj}_WATER_stack*.nii'
+                subj_dir, "ImageData", f"{subj}_WATER", f"{subj}_WATER_stack*.nii"
             )
             for wpath in sorted(glob.glob(water_glob)):
-                m = re.search(r'stack(\d+)\.nii$', wpath)
+                m = re.search(r"stack(\d+)\.nii$", wpath)
                 if not m:
                     continue
                 stack = m.group(1)
                 gt_path = os.path.join(
-                    subj_dir, 'SegmentationMasks', f'combined_gt_stack{stack}.mha'
+                    subj_dir, "SegmentationMasks", f"combined_gt_stack{stack}.mha"
                 )
                 if not os.path.exists(gt_path):
                     continue
@@ -101,9 +112,9 @@ class DixonThighDataset(Dataset):
                 ff_path: str | None = None
                 if self.use_ff:
                     cand = os.path.join(
-                        subj_dir, 'ImageData',
-                        f'{subj}_FATFRACTION',
-                        f'{subj}_FATFRACTION_stack{stack}.nii',
+                        subj_dir, "ImageData",
+                        f"{subj}_FATFRACTION",
+                        f"{subj}_FATFRACTION_stack{stack}.nii",
                     )
                     if os.path.exists(cand):
                         ff_path = cand

@@ -121,6 +121,21 @@ pydocstyle.convention = "google"
     "PT011",  # Missing `match` parameter in `pytest.raises()`
     "S101",   # Use of assert is detected
 ]
+# medsegdiff/ is a standalone ML training tool, not part of the installable package.
+# Standard ML script conventions apply: print for progress, os.path over pathlib,
+# uppercase tensor-shape variables (B, D, H, W), common import aliases (sitk, TF, F).
+"medsegdiff/**.py" = [
+    "T201",    # print() is the intended progress output for CLI scripts
+    "PTH103", "PTH110", "PTH111", "PTH112", "PTH118", "PTH123", "PTH207", "PTH208",
+    "N806", "N803",   # uppercase tensor-shape vars (B, D, H, W) are standard in PyTorch
+    "N812", "N813",   # sitk / TF / F are universal aliases in medical-imaging code
+    "PLR0913",        # scientific functions legitimately need many parameters
+    "PLR0915",        # training loops are necessarily long
+    "S311",           # random is used for data augmentation, not cryptography
+    "PLR2004",        # 0.5 flip probability is not a magic number
+    "TRY003", "EM101", "EM102",  # exception message style — overkill for scripts
+    "ANN001", "ANN201",          # type annotations present where it matters
+]
 
 [tool.ruff.lint.isort]
 known-first-party = ["dissector"]

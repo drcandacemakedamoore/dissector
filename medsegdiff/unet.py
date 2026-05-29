@@ -1,5 +1,4 @@
-"""
-4-level U-Net for diffusion segmentation.
+"""4-level U-Net for diffusion segmentation.
 
 Architecture
 ------------
@@ -13,11 +12,9 @@ at the two deepest encoder / decoder levels.
 
 from __future__ import annotations
 import math
-
 import torch
-import torch.nn as nn
 import torch.nn.functional as F
-
+from torch import nn
 
 # ── helpers ───────────────────────────────────────────────────────────────────
 
@@ -30,11 +27,15 @@ def _groups(ch: int) -> int:
 
 
 class SinusoidalPE(nn.Module):
+    """Fixed sinusoidal positional encoding for scalar timesteps."""
+
     def __init__(self, dim: int) -> None:
+        """Initialize with embedding dimension."""
         super().__init__()
         self.dim = dim
 
     def forward(self, t: torch.Tensor) -> torch.Tensor:
+        """Return (B, dim) sinusoidal embedding for timestep batch t."""
         half = self.dim // 2
         freqs = torch.exp(
             -math.log(10000.0)
@@ -46,7 +47,10 @@ class SinusoidalPE(nn.Module):
 
 
 class TimestepMLP(nn.Module):
+    """Two-layer MLP that projects sinusoidal timestep embeddings."""
+
     def __init__(self, dim: int, out_dim: int) -> None:
+        """Initialize with input and output dimensions."""
         super().__init__()
         self.pe = SinusoidalPE(dim)
         self.net = nn.Sequential(
@@ -56,6 +60,7 @@ class TimestepMLP(nn.Module):
         )
 
     def forward(self, t: torch.Tensor) -> torch.Tensor:
+        """Return (B, out_dim) timestep embedding."""
         return self.net(self.pe(t))
 
 
@@ -75,6 +80,7 @@ class ResBlock(nn.Module):
         self.skip   = nn.Conv2d(in_ch, out_ch, 1) if in_ch != out_ch else nn.Identity()
 
     def forward(self, x: torch.Tensor, t_emb: torch.Tensor) -> torch.Tensor:
+        """Apply residual block with AdaGN scale/shift from timestep embedding."""
         h = F.silu(self.norm1(x))
         h = self.conv1(h)
         ts = self.t_proj(t_emb).unsqueeze(-1).unsqueeze(-1)   # (B, 2*out_ch, 1, 1)
@@ -95,26 +101,27 @@ class Attention(nn.Module):
         self.proj  = nn.Conv2d(ch, ch, 1)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        B, C, H, W = x.shape
-        h = self.norm(x)
-        qkv = self.qkv(h).reshape(B, 3, self.heads, C // self.heads, H * W)
-        q, k, v = qkv.unbind(dim=1)                             # each (B, heads, ch/heads, HW)
-        scale = (C // self.heads) ** -0.5
-        attn = torch.einsum('bhdi,bhdj->bhij', q * scale, k).softmax(dim=-1)
-        h = torch.einsum('bhij,bhdj->bhdi', attn, v).reshape(B, C, H, W)
-        return x + self.proj(h)
+        """Apply spatial self-attention with residual connection."""
+        batch, ch, ht, wd = x.shape
+        feat = self.norm(x)
+        qkv = self.qkv(feat).reshape(batch, 3, self.heads, ch // self.heads, ht * wd)
+        q, k, v = qkv.unbind(dim=1)
+        scale = (ch // self.heads) ** -0.5
+        attn = torch.einsum("bhdi,bhdj->bhij", q * scale, k).softmax(dim=-1)
+        feat = torch.einsum("bhij,bhdj->bhdi", attn, v).reshape(batch, ch, ht, wd)
+        return x + self.proj(feat)
 
 
 # ── U-Net ─────────────────────────────────────────────────────────────────────
 
 class UNet(nn.Module):
-    """
-    Parameters
-    ----------
-    img_ch  : conditioning image channels (1 = water only, 2 = water + FF)
-    base    : base channel count (default 64)
-    t_dim   : sinusoidal embedding dimension (default 256; MLP output = t_dim*4)
-    dropout : dropout inside residual blocks
+    """4-level U-Net for DDPM segmentation with AdaGN timestep conditioning.
+
+    Args:
+        img_ch: conditioning image channels (1 = water only, 2 = water + FF).
+        base: base channel count (default 64).
+        t_dim: sinusoidal embedding dimension (default 256; MLP output = t_dim*4).
+        dropout: dropout inside residual blocks.
     """
 
     def __init__(
@@ -131,11 +138,11 @@ class UNet(nn.Module):
         self.t_emb = TimestepMLP(t_dim, td)
 
         # ── Encoder ──────────────────────────────────────────────────────────
-        # e0: (ic → base),     256×256
-        # e1: (base → base*2), 128×128
-        # e2: (base*2 → base*4), 64×64  + attention
-        # e3: (base*4 → base*8), 32×32  + attention
-        # bottleneck at 16×16
+        # e0: (ic → base),     256x256
+        # e1: (base → base*2), 128x128
+        # e2: (base*2 → base*4), 64x64  + attention
+        # e3: (base*4 → base*8), 32x32  + attention
+        # bottleneck at 16x16
         self.enc_init = nn.Conv2d(ic, base, 3, padding=1)
         self.enc1a = ResBlock(base,     base * 2, td, dropout)
         self.enc1b = ResBlock(base * 2, base * 2, td, dropout)
@@ -154,7 +161,7 @@ class UNet(nn.Module):
 
         # ── Decoder ───────────────────────────────────────────────────────────
         # skip channels concatenated: base*8, base*4, base*2, base
-        self.up = nn.Upsample(scale_factor=2, mode='nearest')
+        self.up = nn.Upsample(scale_factor=2, mode="nearest")
 
         self.dec3a  = ResBlock(base * 8 + base * 8, base * 4, td, dropout)
         self.dec3b  = ResBlock(base * 4,             base * 4, td, dropout)
@@ -177,10 +184,14 @@ class UNet(nn.Module):
 
     # -------------------------------------------------------------------------
     def forward(self, x: torch.Tensor, t: torch.Tensor) -> torch.Tensor:
-        """
-        x : (B, img_ch+1, H, W)  — concat(img, x_t)
-        t : (B,)                  — integer diffusion timesteps
-        Returns (B, 1, H, W) predicted noise.
+        """Run forward pass predicting the noise added to the mask.
+
+        Args:
+            x: (B, img_ch+1, H, W) — concat(img, x_t).
+            t: (B,) integer diffusion timesteps.
+
+        Returns:
+            (B, 1, H, W) predicted noise.
         """
         te = self.t_emb(t)   # (B, t_dim*4)
 
