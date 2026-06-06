@@ -6,9 +6,8 @@ import SimpleITK as sitk
 import torchio as tio
 from scipy.ndimage import gaussian_filter
 
-
 _AUGMENT = tio.Compose([
-    tio.RandomFlip(axes=('LR',)),
+    tio.RandomFlip(axes=("LR",)),
     tio.RandomAffine(scales=0.1, degrees=5),
     tio.RandomElasticDeformation(num_control_points=7),
     tio.RandomBiasField(coefficients=0.3),
@@ -43,7 +42,7 @@ def generate_augmented(
     output_dir.mkdir(parents=True, exist_ok=True)
 
     if stem is None:
-        stem = water_path.name.replace('.nii.gz', '').replace('.nii', '')
+        stem = water_path.name.replace(".nii.gz", "").replace(".nii", "")
 
     subject = tio.Subject(
         water=tio.ScalarImage(water_path),
@@ -53,12 +52,12 @@ def generate_augmented(
     outputs = []
     for i in range(n):
         augmented  = _AUGMENT(subject)
-        water_out  = output_dir / f'{stem}_augmented{i:03d}_water.nii.gz'
-        fat_out    = output_dir / f'{stem}_augmented{i:03d}_fat.nii.gz'
-        augmented['water'].save(water_out)
-        augmented['fat'].save(fat_out)
+        water_out  = output_dir / f"{stem}_augmented{i:03d}_water.nii.gz"
+        fat_out    = output_dir / f"{stem}_augmented{i:03d}_fat.nii.gz"
+        augmented["water"].save(water_out)
+        augmented["fat"].save(fat_out)
         outputs.append((water_out, fat_out))
-        print(f'  [{i+1}/{n}] saved {water_out.name}')
+        print(f"  [{i+1}/{n}] saved {water_out.name}")
 
     return outputs
 
@@ -89,7 +88,7 @@ def _random_bias_field(shape: tuple, rng: np.random.Generator) -> np.ndarray:
     coeffs = rng.standard_normal((order + 1,) * len(shape)) * 0.1
     field  = np.zeros(shape, dtype=np.float32)
     coords = [np.linspace(-1, 1, s) for s in shape]
-    grids  = np.meshgrid(*coords, indexing='ij')
+    grids  = np.meshgrid(*coords, indexing="ij")
     for idx in np.ndindex(coeffs.shape):
         term = float(coeffs[idx])
         for dim, i in enumerate(idx):
@@ -108,15 +107,15 @@ def _muscle_texture(shape: tuple, rng: np.random.Generator, strength: float = 0.
     # Pick a random primary fiber axis (0=z/slice, 1=y, 2=x)
     fiber_axis = rng.integers(0, 3)
     sigmas = {
-        'fine':   [0.5, 0.5, 0.5],
-        'fiber':  [0.5, 0.5, 0.5],   # will be overridden below
-        'coarse': [2.0, 2.0, 2.0],
+        "fine":   [0.5, 0.5, 0.5],
+        "fiber":  [0.5, 0.5, 0.5],   # will be overridden below
+        "coarse": [2.0, 2.0, 2.0],
     }
     # Elongate the 'fiber' kernel along the chosen axis
-    sigmas['fiber'][fiber_axis] = rng.uniform(4.0, 8.0)
+    sigmas["fiber"][fiber_axis] = rng.uniform(4.0, 8.0)
 
     texture = np.zeros(shape, dtype=np.float32)
-    weights = {'fine': 0.3, 'fiber': 0.5, 'coarse': 0.2}
+    weights = {"fine": 0.3, "fiber": 0.5, "coarse": 0.2}
     for key, sigma in sigmas.items():
         noise = rng.standard_normal(shape).astype(np.float32)
         texture += weights[key] * gaussian_filter(noise, sigma=sigma)
@@ -146,8 +145,8 @@ def _synthesise_volume(
         mask = seg == label
         if not mask.any():
             continue
-        mu  = rng.uniform(wm_lo, wm_hi) if channel == 'water' else rng.uniform(fm_lo, fm_hi)
-        sig = w_sig if channel == 'water' else f_sig
+        mu  = rng.uniform(wm_lo, wm_hi) if channel == "water" else rng.uniform(fm_lo, fm_hi)
+        sig = w_sig if channel == "water" else f_sig
         vol[mask] = rng.normal(mu, sig, size=int(mask.sum())).clip(0, 1)
 
         # Add fibrous texture inside muscle regions only
@@ -193,8 +192,8 @@ def generate_synthetic(
 
     if stem is None:
         stem = seg_path.name
-        for ext in ('.nii.gz', '.nii', '.mha'):
-            stem = stem.replace(ext, '')
+        for ext in (".nii.gz", ".nii", ".mha"):
+            stem = stem.replace(ext, "")
 
     seg_sitk = sitk.ReadImage(str(seg_path))
     seg_arr  = sitk.GetArrayFromImage(seg_sitk).astype(np.int16)
@@ -203,20 +202,20 @@ def generate_synthetic(
     outputs = []
 
     for i in range(n):
-        water_arr = _synthesise_volume(seg_arr, 'water', rng)
-        fat_arr   = _synthesise_volume(seg_arr, 'fat',   rng)
+        water_arr = _synthesise_volume(seg_arr, "water", rng)
+        fat_arr   = _synthesise_volume(seg_arr, "fat",   rng)
 
         def _save(arr, suffix, idx=i):
             img = sitk.GetImageFromArray(arr)
             img.CopyInformation(seg_sitk)
-            path = output_dir / f'{stem}_synth{idx:03d}_{suffix}.nii.gz'
+            path = output_dir / f"{stem}_synth{idx:03d}_{suffix}.nii.gz"
             sitk.WriteImage(img, str(path))
             return path
 
-        water_out = _save(water_arr, 'water')
-        fat_out   = _save(fat_arr,   'fat')
+        water_out = _save(water_arr, "water")
+        fat_out   = _save(fat_arr,   "fat")
         outputs.append((water_out, fat_out))
-        print(f'  [{i+1}/{n}] saved {water_out.name}')
+        print(f"  [{i+1}/{n}] saved {water_out.name}")
 
     return outputs
 
@@ -227,7 +226,7 @@ def register_mri(
     fixed_path: str | pathlib.Path,
     moving_path: str | pathlib.Path,
     output_path: str | pathlib.Path,
-    transform: str = 'affine',
+    transform: str = "affine",
 ) -> sitk.Image:
     """Register *moving* onto *fixed* and save the result.
 
@@ -265,22 +264,22 @@ def register_mri(
 
     initial_tx = sitk.CenteredTransformInitializer(
         fixed, moving,
-        sitk.AffineTransform(fixed.GetDimension()) if transform == 'affine'
+        sitk.AffineTransform(fixed.GetDimension()) if transform == "affine"
         else sitk.Euler3DTransform(),
         sitk.CenteredTransformInitializerFilter.GEOMETRY,
     )
     reg.SetInitialTransform(initial_tx, inPlace=False)
 
-    print(f'  Registering ({transform}): {pathlib.Path(moving_path).name} -> {pathlib.Path(fixed_path).name}')
+    print(f"  Registering ({transform}): {pathlib.Path(moving_path).name} -> {pathlib.Path(fixed_path).name}")
     final_tx = reg.Execute(fixed, moving)
-    print(f'  Metric: {reg.GetMetricValue():.4f}  |  Iterations: {reg.GetOptimizerIteration()}')
+    print(f"  Metric: {reg.GetMetricValue():.4f}  |  Iterations: {reg.GetOptimizerIteration()}")
 
     registered = sitk.Resample(moving, fixed, final_tx, sitk.sitkLinear, 0.0, moving.GetPixelID())
 
     output_path = pathlib.Path(output_path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     sitk.WriteImage(registered, str(output_path))
-    print(f'  Saved -> {output_path}')
+    print(f"  Saved -> {output_path}")
     return registered
 
 
@@ -318,7 +317,7 @@ def blend_mris(
     output_path = pathlib.Path(output_path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     sitk.WriteImage(blended, str(output_path))
-    print(f'  Blended (alpha={alpha:.2f}) -> {output_path}')
+    print(f"  Blended (alpha={alpha:.2f}) -> {output_path}")
     return blended
 
 
@@ -327,7 +326,7 @@ def register_and_blend(
     moving_path: str | pathlib.Path,
     output_path: str | pathlib.Path,
     alpha: float = 0.5,
-    transform: str = 'affine',
+    transform: str = "affine",
 ) -> sitk.Image:
     """Register *moving* onto *fixed*, then blend the two.
 
@@ -344,7 +343,7 @@ def register_and_blend(
         The blended SimpleITK image.
     """
     output_path = pathlib.Path(output_path)
-    reg_tmp     = output_path.parent / f'_reg_tmp_{output_path.name}'
+    reg_tmp     = output_path.parent / f"_reg_tmp_{output_path.name}"
 
     registered = register_mri(fixed_path, moving_path, reg_tmp, transform=transform)
     blended    = blend_mris(fixed_path, registered, output_path, alpha=alpha)
