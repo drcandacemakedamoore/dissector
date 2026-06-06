@@ -76,8 +76,10 @@ venv.bak/
 # data
 /eval_notebooks/myosegmenTUM/*/ImageData
 eval_notebooks/myosegmenTUM/*/ImageData
+eval_notebooks/myosegmenTUM/**/ImageData
 /eval_notebooks/myosegmenTUM/*/SegmentationMasks
 eval_notebooks/myosegmenTUM/*/SegmentationMasks
+eval_notebooks/myosegmenTUM/**/SegmentationMasks
 /eval_notebooks/ground_truths
 eval_notebooks/ground_truths
 /eval_notebooks/MuscleMap_segs
