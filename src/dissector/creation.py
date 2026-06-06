@@ -1,10 +1,13 @@
 # creation.py — synthesise and augment Dixon MRI data using TorchIO
-
+from __future__ import annotations
+import logging
 import pathlib
 import numpy as np
-import SimpleITK as sitk
+import SimpleITK as sitk  # noqa: N813
 import torchio as tio
 from scipy.ndimage import gaussian_filter
+
+_log = logging.getLogger(__name__)
 
 _AUGMENT = tio.Compose([
     tio.RandomFlip(axes=("LR",)),
@@ -34,7 +37,7 @@ def generate_augmented(
                      filename stem (without extension).
 
     Returns:
-        List of (water_out, fat_out) path pairs for each sugmented scan.
+        List of (water_out, fat_out) path pairs for each augmented scan.
     """
     water_path = pathlib.Path(water_path)
     fat_path   = pathlib.Path(fat_path)
@@ -57,7 +60,7 @@ def generate_augmented(
         augmented["water"].save(water_out)
         augmented["fat"].save(fat_out)
         outputs.append((water_out, fat_out))
-        print(f"  [{i+1}/{n}] saved {water_out.name}")
+        _log.info("[%d/%d] saved %s", i + 1, n, water_out.name)
 
     return outputs
 
@@ -68,8 +71,7 @@ def generate_augmented(
 # Labels follow the myosegmenTUM combined_gt convention:
 #   0=background, 1=L_Gracilis, 2=L_Hamstrings, 3=L_Quadriceps,
 #   4=L_Sartorius, 5=R_Gracilis, 6=R_Hamstrings, 7=R_Quadriceps, 8=R_Sartorius
-_LABEL_PRIORS = {
-    # label: (water_mu_lo, water_mu_hi, water_sig, ff_mu_lo, ff_mu_hi, ff_sig)
+_LABEL_PRIORS: dict[int, tuple[float, float, float, float, float, float]] = {
     0: (0.05, 0.60, 0.08, 0.10, 0.80, 0.10),  # background: fat, bone, air mixed
     1: (0.40, 0.75, 0.05, 0.03, 0.20, 0.03),  # L_Gracilis
     2: (0.40, 0.75, 0.05, 0.03, 0.20, 0.03),  # L_Hamstrings
@@ -82,7 +84,7 @@ _LABEL_PRIORS = {
 }
 
 
-def _random_bias_field(shape: tuple, rng: np.random.Generator) -> np.ndarray:
+def _random_bias_field(shape: tuple[int, ...], rng: np.random.Generator) -> np.ndarray:
     """Smooth multiplicative bias field simulating MRI inhomogeneity."""
     order = 3
     coeffs = rng.standard_normal((order + 1,) * len(shape)) * 0.1
@@ -97,21 +99,19 @@ def _random_bias_field(shape: tuple, rng: np.random.Generator) -> np.ndarray:
     return np.exp(field).astype(np.float32)
 
 
-def _muscle_texture(shape: tuple, rng: np.random.Generator, strength: float = 0.06) -> np.ndarray:
+def _muscle_texture(shape: tuple[int, ...], rng: np.random.Generator, strength: float = 0.06) -> np.ndarray:
     """Anisotropic fiber-like texture for muscle tissue.
 
     Generates noise at three scales and blends them, with one scale heavily
     elongated along a random axis to mimic myofibril bundles.  The result
     is zero-mean and scaled so it can be added directly to a [0,1] volume.
     """
-    # Pick a random primary fiber axis (0=z/slice, 1=y, 2=x)
     fiber_axis = rng.integers(0, 3)
-    sigmas = {
+    sigmas: dict[str, list[float]] = {
         "fine":   [0.5, 0.5, 0.5],
-        "fiber":  [0.5, 0.5, 0.5],   # will be overridden below
+        "fiber":  [0.5, 0.5, 0.5],
         "coarse": [2.0, 2.0, 2.0],
     }
-    # Elongate the 'fiber' kernel along the chosen axis
     sigmas["fiber"][fiber_axis] = rng.uniform(4.0, 8.0)
 
     texture = np.zeros(shape, dtype=np.float32)
@@ -120,7 +120,6 @@ def _muscle_texture(shape: tuple, rng: np.random.Generator, strength: float = 0.
         noise = rng.standard_normal(shape).astype(np.float32)
         texture += weights[key] * gaussian_filter(noise, sigma=sigma)
 
-    # Normalise to zero-mean, then scale to desired strength
     texture -= texture.mean()
     std = texture.std()
     if std > 0:
@@ -136,9 +135,6 @@ def _synthesise_volume(
 ) -> np.ndarray:
     """Build one synthetic MRI volume from a label map."""
     vol = np.zeros(seg.shape, dtype=np.float32)
-
-    # Generate one texture field per muscle label so each muscle can
-    # have a different fiber orientation
     muscle_labels = set(_LABEL_PRIORS) - {0}
 
     for label, (wm_lo, wm_hi, w_sig, fm_lo, fm_hi, f_sig) in _LABEL_PRIORS.items():
@@ -149,7 +145,6 @@ def _synthesise_volume(
         sig = w_sig if channel == "water" else f_sig
         vol[mask] = rng.normal(mu, sig, size=int(mask.sum())).clip(0, 1)
 
-        # Add fibrous texture inside muscle regions only
         if label in muscle_labels:
             texture = _muscle_texture(seg.shape, rng)
             vol[mask] += texture[mask]
@@ -205,7 +200,7 @@ def generate_synthetic(
         water_arr = _synthesise_volume(seg_arr, "water", rng)
         fat_arr   = _synthesise_volume(seg_arr, "fat",   rng)
 
-        def _save(arr, suffix, idx=i):
+        def _save(arr: np.ndarray, suffix: str, idx: int = i) -> pathlib.Path:
             img = sitk.GetImageFromArray(arr)
             img.CopyInformation(seg_sitk)
             path = output_dir / f"{stem}_synth{idx:03d}_{suffix}.nii.gz"
@@ -215,7 +210,7 @@ def generate_synthetic(
         water_out = _save(water_arr, "water")
         fat_out   = _save(fat_arr,   "fat")
         outputs.append((water_out, fat_out))
-        print(f"  [{i+1}/{n}] saved {water_out.name}")
+        _log.info("[%d/%d] saved %s", i + 1, n, water_out.name)
 
     return outputs
 
@@ -270,16 +265,18 @@ def register_mri(
     )
     reg.SetInitialTransform(initial_tx, inPlace=False)
 
-    print(f"  Registering ({transform}): {pathlib.Path(moving_path).name} -> {pathlib.Path(fixed_path).name}")
+    _log.info("Registering (%s): %s -> %s", transform,
+              pathlib.Path(moving_path).name, pathlib.Path(fixed_path).name)
     final_tx = reg.Execute(fixed, moving)
-    print(f"  Metric: {reg.GetMetricValue():.4f}  |  Iterations: {reg.GetOptimizerIteration()}")
+    _log.info("Metric: %.4f  |  Iterations: %d",
+              reg.GetMetricValue(), reg.GetOptimizerIteration())
 
     registered = sitk.Resample(moving, fixed, final_tx, sitk.sitkLinear, 0.0, moving.GetPixelID())
 
     output_path = pathlib.Path(output_path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     sitk.WriteImage(registered, str(output_path))
-    print(f"  Saved -> {output_path}")
+    _log.info("Saved -> %s", output_path)
     return registered
 
 
@@ -317,7 +314,7 @@ def blend_mris(
     output_path = pathlib.Path(output_path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     sitk.WriteImage(blended, str(output_path))
-    print(f"  Blended (alpha={alpha:.2f}) -> {output_path}")
+    _log.info("Blended (alpha=%.2f) -> %s", alpha, output_path)
     return blended
 
 
