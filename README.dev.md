@@ -43,6 +43,7 @@ tox
 
 Testing with `tox` allows for keeping the testing environment separate from your development environment.
 The development environment will typically accumulate (old) packages during development that interfere with testing; this problem is avoided by testing with `tox`.
+Or so we hear. We just use pytest.
 
 ### Test coverage
 
