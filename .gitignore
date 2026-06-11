@@ -72,6 +72,7 @@ venv.bak/
 *.nii
 *.nii.gz
 *.png
+*.csv
 
 # data
 /eval_notebooks/myosegmenTUM/*/ImageData
