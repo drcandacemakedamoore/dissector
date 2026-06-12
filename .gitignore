@@ -98,6 +98,7 @@ eval_notebooks/museg_thigh_segs/
 eval_notebooks/dafne/extras/dafne_thigh_results/model_used/
 eval_notebooks/dafne/extras/model/
 eval_notebooks/sheffeld/
+eval_notebooks/medsegdiff_ckpts/
 OLDeval_notebooks/
 /OLDeval_notebooks
 /summary_results
