@@ -62,8 +62,6 @@ be run directly (e.g. `python medsegdiff/train.py --muscle R_gracilis`) and are
 not importable as dissector library code.
 
 
-The project setup is documented in [project_setup.md](project_setup.md). Feel free to remove this document (and/or the link to this document) if you don't need it.
-
 ## Installation
 
 To install dissector from GitHub repository, do:

@@ -1,6 +1,9 @@
 # Project Setup
 
-Here we provide some details about the project setup. Most of the choices are explained in the
+Here we should provide some details about the project setup. BUT actually this is just a template we are keeping around.
+
+TEMPLATE:
+Most of the choices are explained in the
 [guide](https://guide.esciencecenter.nl). Links to the relevant sections are included below. Feel free to remove this
 text when the development of the software package takes off.
 

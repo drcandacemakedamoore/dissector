@@ -19,14 +19,21 @@ _AUGMENT = tio.Compose([
 ])
 
 
-def generate_augmented(
+def generate_augmented(  # noqa: PLR0913
     water_path: str | pathlib.Path,
     fat_path: str | pathlib.Path,
     n: int,
     output_dir: str | pathlib.Path,
     stem: str | None = None,
-) -> list[tuple[pathlib.Path, pathlib.Path]]:
+    seg_path: str | pathlib.Path | None = None,
+) -> list[tuple[pathlib.Path, pathlib.Path, pathlib.Path | None]]:
     """Generate *n* augmented Dixon MRI pairs from one real scan pair.
+
+    Spatial augmentations (flip, affine, elastic deformation) are applied
+    jointly to the images and — when *seg_path* is provided — to the
+    segmentation mask, so they remain perfectly aligned.  Intensity
+    augmentations (bias field, noise, gamma) are applied only to the images
+    because TorchIO automatically skips them for ``LabelMap`` channels.
 
     Args:
         water_path:  Path to the water NIfTI file (.nii or .nii.gz).
@@ -35,9 +42,13 @@ def generate_augmented(
         output_dir:  Directory where outputs are saved (created if absent).
         stem:        Base name for output files. Defaults to the water
                      filename stem (without extension).
+        seg_path:    Optional path to a segmentation mask (.nii, .nii.gz,
+                     or .mha).  Receives the same spatial transforms as the
+                     images and is saved as ``{stem}_augmented{i:03d}_seg.nii.gz``.
 
     Returns:
-        List of (water_out, fat_out) path pairs for each augmented scan.
+        List of (water_out, fat_out, seg_out) path triples.
+        *seg_out* is ``None`` when *seg_path* is not supplied.
     """
     water_path = pathlib.Path(water_path)
     fat_path   = pathlib.Path(fat_path)
@@ -47,19 +58,29 @@ def generate_augmented(
     if stem is None:
         stem = water_path.name.replace(".nii.gz", "").replace(".nii", "")
 
-    subject = tio.Subject(
-        water=tio.ScalarImage(water_path),
-        fat=tio.ScalarImage(fat_path),
-    )
+    subject_kwargs: dict = {
+        "water": tio.ScalarImage(water_path),
+        "fat":   tio.ScalarImage(fat_path),
+    }
+    if seg_path is not None:
+        subject_kwargs["seg"] = tio.LabelMap(pathlib.Path(seg_path))
+
+    subject = tio.Subject(**subject_kwargs)
 
     outputs = []
     for i in range(n):
-        augmented  = _AUGMENT(subject)
-        water_out  = output_dir / f"{stem}_augmented{i:03d}_water.nii.gz"
-        fat_out    = output_dir / f"{stem}_augmented{i:03d}_fat.nii.gz"
+        augmented = _AUGMENT(subject)
+        water_out = output_dir / f"{stem}_augmented{i:03d}_water.nii.gz"
+        fat_out   = output_dir / f"{stem}_augmented{i:03d}_fat.nii.gz"
         augmented["water"].save(water_out)
         augmented["fat"].save(fat_out)
-        outputs.append((water_out, fat_out))
+
+        seg_out = None
+        if seg_path is not None:
+            seg_out = output_dir / f"{stem}_augmented{i:03d}_seg.nii.gz"
+            augmented["seg"].save(seg_out)
+
+        outputs.append((water_out, fat_out, seg_out))
         _log.info("[%d/%d] saved %s", i + 1, n, water_out.name)
 
     return outputs

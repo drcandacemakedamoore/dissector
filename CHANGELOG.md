@@ -1,5 +1,15 @@
 # Changelog
 
+
+
+## [v0.0.7] - 2026-06-13
+
+### Added
+
+- **Sheffield MRI dataset support** 
+- additional image augmentation functionality
+
+
 ## [v0.0.6] - 2026-06-06
 
 ### Added
