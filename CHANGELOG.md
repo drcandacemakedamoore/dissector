@@ -2,12 +2,14 @@
 
 
 
-## [v0.0.7] - 2026-06-13
+## [v0.0.7] - 2026-06-16
 
 ### Added
 
 - **Sheffield MRI dataset support** 
 - additional image augmentation functionality
+- GPU metrics notebooks
+- onzediff folder to train up our own diffusion model
 
 
 ## [v0.0.6] - 2026-06-06
