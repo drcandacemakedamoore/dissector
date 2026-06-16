@@ -17,11 +17,13 @@ import argparse
 import os
 import time
 import torch
+from dataset import GT_LABELS
+from dataset import DixonThighDataset
+from dataset import discover_subjects
+from dataset import train_val_split
+from diffusion import GaussianDiffusion
 from torch import optim
 from torch.utils.data import DataLoader
-
-from dataset import GT_LABELS, DixonThighDataset, discover_subjects, train_val_split
-from diffusion import GaussianDiffusion
 from unet import UNet
 
 
@@ -55,10 +57,11 @@ def validate(model, diffusion, loader, device, ddim_steps):
     """Run DDIM on validation loader and return mean Dice."""
     model.eval()
     scores = []
-    for img, mask in loader:
-        img, mask = img.to(device), mask.to(device)
-        pred = diffusion.ddim_sample(model, img, num_steps=ddim_steps)
-        scores.append(diffusion.dice((pred > 0).float(), (mask > 0).float()))
+    for img_cpu, mask_cpu in loader:
+        img_d  = img_cpu.to(device)
+        mask_d = mask_cpu.to(device)
+        pred = diffusion.ddim_sample(model, img_d, num_steps=ddim_steps)
+        scores.append(diffusion.dice((pred > 0).float(), (mask_d > 0).float()))
     model.train()
     return float(sum(scores) / max(len(scores), 1))
 
@@ -100,7 +103,7 @@ def main() -> None:
                               num_workers=args.num_workers, pin_memory=True)
 
     img_ch = train_ds.n_image_channels
-    print(f"Image channels: {img_ch}  ({args.n_adjacent} slices × "
+    print(f"Image channels: {img_ch}  ({args.n_adjacent} slices x "
           f"{'2 (water+FF)' if args.use_ff else '1 (water)'})")
 
     model     = UNet(img_ch=img_ch, base=args.base_ch, t_dim=args.t_dim,
@@ -134,10 +137,11 @@ def main() -> None:
 
     for epoch in range(start_epoch, args.epochs):
         epoch_loss = 0.0
-        for img, mask in train_loader:
-            img, mask = img.to(device), mask.to(device)
-            t = torch.randint(0, args.T, (img.shape[0],), device=device)
-            loss = diffusion.training_loss(model, mask, img, t)
+        for img_cpu, mask_cpu in train_loader:
+            img_d  = img_cpu.to(device)
+            mask_d = mask_cpu.to(device)
+            t = torch.randint(0, args.T, (img_d.shape[0],), device=device)
+            loss = diffusion.training_loss(model, mask_d, img_d, t)
             optimizer.zero_grad()
             loss.backward()
             torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)

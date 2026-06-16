@@ -15,9 +15,8 @@ import numpy as np
 import SimpleITK as sitk
 import torch
 import torchvision.transforms.functional as TF
-from torch.utils.data import Dataset
-
 from body_oval import get_body_mask
+from torch.utils.data import Dataset
 
 GT_LABELS: dict[str, int] = {
     "R_gracilis":  5,
@@ -174,7 +173,7 @@ class DixonThighDataset(Dataset):
 
     @property
     def n_image_channels(self) -> int:
-        """Total input channels: n_adjacent × base_channels."""
+        """Total input channels: n_adjacent x base_channels."""
         if not self.samples:
             return self.n_adjacent
         _, ff_path, _, _ = self.samples[0]

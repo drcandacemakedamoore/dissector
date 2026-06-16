@@ -25,9 +25,10 @@ import numpy as np
 import SimpleITK as sitk
 import torch
 import torch.nn.functional as F
-
 from body_oval import get_body_mask
-from dataset import GT_LABELS, _norm, discover_subjects
+from dataset import GT_LABELS
+from dataset import _norm
+from dataset import discover_subjects
 from diffusion import GaussianDiffusion
 from unet import UNet
 
@@ -54,7 +55,7 @@ def get_args() -> argparse.Namespace:
 
 
 @torch.no_grad()
-def segment_volume(  # noqa: PLR0913
+def segment_volume(
     model: torch.nn.Module,
     diffusion: GaussianDiffusion,
     water_path: str,
@@ -68,10 +69,19 @@ def segment_volume(  # noqa: PLR0913
     """Segment a single NIfTI water stack with 2.5D input and body-oval masking.
 
     Args:
+        model: Trained U-Net denoising model.
+        diffusion: GaussianDiffusion scheduler used for DDIM sampling.
+        water_path: Path to the water NIfTI file.
+        ff_path: Optional path to the fat-fraction NIfTI file.
+        img_size: Spatial size to resize slices to before inference.
+        device: Torch device to run inference on.
+        ddim_steps: Number of DDIM denoising steps.
+        n_adjacent: Number of adjacent slices stacked as input channels.
         body_oval_output: When True, zero the predicted mask outside the body
             oval, forcing predictions to stay inside the detected body region.
 
-    Returns binary uint8 volume (D, H_orig, W_orig).
+    Returns:
+        Binary uint8 volume of shape (D, H_orig, W_orig).
     """
     w_arr = sitk.GetArrayFromImage(sitk.ReadImage(water_path)).astype(np.float32)
     D, H, W = w_arr.shape

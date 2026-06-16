@@ -5,14 +5,12 @@ Copied from dissector.diffusion so onzediff is self-contained on Lambda.
 
 from __future__ import annotations
 import numpy as np
-from scipy.ndimage import (
-    binary_closing,
-    binary_erosion,
-    binary_fill_holes,
-    binary_opening,
-    generic_filter,
-    label as ndlabel,
-)
+from scipy.ndimage import binary_closing
+from scipy.ndimage import binary_erosion
+from scipy.ndimage import binary_fill_holes
+from scipy.ndimage import binary_opening
+from scipy.ndimage import generic_filter
+from scipy.ndimage import label as ndlabel
 
 
 def find_body_oval(
