@@ -99,6 +99,11 @@ eval_notebooks/dafne/extras/dafne_thigh_results/model_used/
 eval_notebooks/dafne/extras/model/
 eval_notebooks/sheffeld/
 eval_notebooks/medsegdiff_ckpts/
+
+# per-algorithm segmentation output dirs (sheffield_segs, augmented_segs,
+# segs_water, asian_segs, asian_segs_water, sheffield_segs_water, ...) —
+# downloaded Lambda results, regenerable, not meant to be committed
+eval_notebooks/*/*segs*/
 OLDeval_notebooks/
 /OLDeval_notebooks
 /summary_results
