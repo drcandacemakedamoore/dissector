@@ -44,3 +44,28 @@ jobs:
         with:
           name: python-dist
           path: dist/*
+
+  github-release:
+    if: ${{ github.repository == 'drcandacemakedamoore/dissector' }}
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Extract changelog section for this tag
+        run: |
+          awk -v ver="${{ github.ref_name }}" '
+            index($0, "## [" ver "]") == 1 { flag=1; next }
+            flag && index($0, "## [") == 1 { flag=0 }
+            flag
+          ' CHANGELOG.md > release_notes.md
+          cat release_notes.md
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: ${{ github.ref_name }}
+          body_path: release_notes.md
