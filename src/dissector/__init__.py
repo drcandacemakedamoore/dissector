@@ -6,4 +6,4 @@ logging.getLogger(__name__).addHandler(logging.NullHandler())
 
 __author__ = "Candace Makeda Moore"
 __email__ = "doctormakeda@gmail.com"
-__version__ = "0.0.6"
+__version__ = "0.0.7"
