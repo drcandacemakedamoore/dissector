@@ -26,7 +26,7 @@ import SimpleITK as sitk
 import torch
 import torch.nn.functional as F
 from body_oval import get_body_mask
-from dataset import GT_LABELS
+from dataset import ALL_MUSCLE_CHOICES
 from dataset import _norm
 from dataset import discover_subjects
 from diffusion import GaussianDiffusion
@@ -36,7 +36,7 @@ from unet import UNet
 def get_args() -> argparse.Namespace:
     """Parse command-line arguments."""
     p = argparse.ArgumentParser(description="onzediff inference")
-    p.add_argument("--muscle",      required=True, choices=list(GT_LABELS))
+    p.add_argument("--muscle",      required=True, choices=ALL_MUSCLE_CHOICES)
     p.add_argument("--ckpt_dir",    default=os.path.expanduser("~/onzediff_ckpts"))
     p.add_argument("--gt_base",     default=os.path.expanduser("~/myosegmenTUM"))
     p.add_argument("--out_dir",     default=os.path.expanduser("~/onzediff_segs"))
@@ -46,6 +46,13 @@ def get_args() -> argparse.Namespace:
     p.add_argument("--T",           type=int, default=1000)
     p.add_argument("--ddim_steps",  type=int, default=50)
     p.add_argument("--subjects",    nargs="*", default=None)
+    p.add_argument(
+        "--use_body_oval", default=True, action=argparse.BooleanOptionalAction,
+        help="Load the body-oval-masked checkpoint ({muscle}_best.pt) and mask "
+             "the input accordingly (default: on). Pass --no-use_body_oval to "
+             "load the unmasked variant ({muscle}_nomask_best.pt) instead -- "
+             "must match how the checkpoint was trained.",
+    )
     p.add_argument(
         "--body_oval_output", default=False,
         action=argparse.BooleanOptionalAction,
@@ -65,6 +72,7 @@ def segment_volume(
     ddim_steps: int,
     n_adjacent: int,
     body_oval_output: bool = False,
+    use_body_oval: bool = True,
 ) -> np.ndarray:
     """Segment a single NIfTI water stack with 2.5D input and body-oval masking.
 
