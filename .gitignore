@@ -113,3 +113,14 @@ summary_results
 summary_results_P_only
 copy_back.sh
 bash_fat_frac_move.sh
+
+eval_notebooks/bar_graphs/
+eval_notebooks/radar_musclemap_legend.pdf
+eval_notebooks/radar_musclemap_legend.tif
+eval_notebooks/radar_musclemap_wb_vs_thigh.pdf
+eval_notebooks/radar_musclemap_wb_vs_thigh.tif
+/eval_notebooks/bar_graphs/
+/eval_notebooks/radar_musclemap_legend.pdf
+/eval_notebooks/radar_musclemap_legend.tif
+/eval_notebooks/radar_musclemap_wb_vs_thigh.pdf
+/eval_notebooks/radar_musclemap_wb_vs_thigh.tif
