@@ -68,11 +68,15 @@ venv.bak/
 *.swo
 *.orig
 
+
 # large data files (images)
 *.nii
 *.nii.gz
 *.png
 *.csv
+*.pdf
+*.tif
+*.tiff
 
 # data
 /eval_notebooks/myosegmenTUM/*/ImageData

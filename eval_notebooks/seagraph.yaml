@@ -9,6 +9,9 @@ dependencies:
   - pandas
   - matplotlib
   - seaborn
+  - ipywidgets
+  - simpleitk
+  - scikit-image
   - pip
   - pip:
     - -e ..   # installs dissector from the repo root (run conda env create from eval_notebooks/)
